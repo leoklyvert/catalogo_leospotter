@@ -1,18 +1,5 @@
 ```javascript
-/* =========================================
-   CATÁLOGO LEOSPOTTER - V1
-========================================= */
-
-
-/* =========================================
-   DADOS DE TESTE
-
-   Depois vamos substituir isso pelo sistema
-   real de eventos/fotos.
-========================================= */
-
 const aircraft = [
-
     {
         registration: "PT-TEST",
         model: "Aeronave de demonstração",
@@ -42,23 +29,13 @@ const aircraft = [
             "https://images.unsplash.com/photo-1436491865332-7a61a109cc05"
         ]
     }
-
 ];
 
 
-/* =========================================
-   VARIÁVEIS
-========================================= */
-
 let currentAircraft = null;
 let currentPhotoIndex = 0;
-
 let selectedPhotos = [];
 
-
-/* =========================================
-   ELEMENTOS
-========================================= */
 
 const aircraftGrid =
     document.getElementById("aircraftGrid");
@@ -81,6 +58,9 @@ const viewerImage =
 const galleryTitle =
     document.getElementById("galleryTitle");
 
+const galleryModel =
+    document.getElementById("galleryModel");
+
 const selectedCount =
     document.getElementById("selectedCount");
 
@@ -99,7 +79,6 @@ const searchInput =
 ========================================= */
 
 renderAircraft();
-
 updateSummary();
 
 
@@ -109,22 +88,17 @@ updateSummary();
 
 function updateSummary() {
 
-    const aircraftCount =
-        document.getElementById("aircraftCount");
-
-    const photoCount =
-        document.getElementById("photoCount");
-
-    aircraftCount.textContent =
+    document.getElementById("aircraftCount").textContent =
         aircraft.length;
 
     const totalPhotos =
         aircraft.reduce(
-            (total, plane) => total + plane.photos.length,
+            (total, plane) =>
+                total + plane.photos.length,
             0
         );
 
-    photoCount.textContent =
+    document.getElementById("photoCount").textContent =
         totalPhotos;
 }
 
@@ -140,16 +114,20 @@ function renderAircraft(list = aircraft) {
     if (list.length === 0) {
 
         aircraftGrid.innerHTML = `
-            <p>
-                Nenhuma aeronave encontrada.
-            </p>
+            <div class="search-result">
+                <strong>Nenhuma aeronave encontrada.</strong>
+                <span>Verifique a matrícula digitada.</span>
+            </div>
         `;
 
         return;
     }
 
 
-    list.forEach((plane, index) => {
+    list.forEach((plane) => {
+
+        const originalIndex =
+            aircraft.indexOf(plane);
 
         const card =
             document.createElement("article");
@@ -159,7 +137,6 @@ function renderAircraft(list = aircraft) {
 
 
         card.innerHTML = `
-
             <img
                 src="${plane.photos[0]}"
                 class="aircraft-image"
@@ -179,26 +156,26 @@ function renderAircraft(list = aircraft) {
 
                 <div class="photo-number">
                     ${plane.photos.length}
-                    ${plane.photos.length === 1 ? "foto" : "fotos"}
+                    ${plane.photos.length === 1
+                        ? "FOTOGRAFIA"
+                        : "FOTOGRAFIAS"}
                 </div>
 
                 <button
                     class="view-button"
-                    onclick="openGallery(${index})"
+                    type="button"
                 >
-                    Ver fotos
+                    VER FOTOGRAFIAS →
                 </button>
 
             </div>
         `;
 
 
-        card
-            .querySelector(".aircraft-image")
-            .addEventListener(
-                "click",
-                () => openGallery(index)
-            );
+        card.addEventListener(
+            "click",
+            () => openGallery(originalIndex)
+        );
 
 
         aircraftGrid.appendChild(card);
@@ -232,6 +209,48 @@ searchInput.addEventListener(
 
         renderAircraft(filtered);
 
+
+        const result =
+            document.getElementById("searchResult");
+
+
+        if (term === "") {
+
+            result.innerHTML = "";
+
+            return;
+        }
+
+
+        if (filtered.length === 0) {
+
+            result.innerHTML = `
+                <strong>
+                    Nenhuma aeronave encontrada
+                </strong>
+
+                <span>
+                    Não encontramos a matrícula "${this.value.toUpperCase()}".
+                </span>
+            `;
+
+        } else {
+
+            result.innerHTML = `
+                <strong>
+                    ${filtered.length}
+                    ${filtered.length === 1
+                        ? "aeronave encontrada"
+                        : "aeronaves encontradas"}
+                </strong>
+
+                <span>
+                    Resultado para "${this.value.toUpperCase()}"
+                </span>
+            `;
+
+        }
+
     }
 );
 
@@ -247,6 +266,9 @@ function openGallery(index) {
 
     galleryTitle.textContent =
         currentAircraft.registration;
+
+    galleryModel.textContent =
+        currentAircraft.model;
 
 
     selectedPhotos = [];
@@ -315,7 +337,6 @@ function renderPhotos() {
 
 
             card.innerHTML = `
-
                 <img
                     src="${photo}"
                     alt="Foto ${index + 1}"
@@ -324,11 +345,10 @@ function renderPhotos() {
 
                 <div
                     class="select-check"
-                    title="Selecionar foto"
+                    title="Selecionar fotografia"
                 >
                     ${selected ? "✓" : "+"}
                 </div>
-
             `;
 
 
@@ -505,6 +525,7 @@ document
 
             currentPhotoIndex++;
 
+
             if (
                 currentPhotoIndex >=
                 currentAircraft.photos.length
@@ -513,6 +534,7 @@ document
                 currentPhotoIndex = 0;
 
             }
+
 
             viewerImage.src =
                 currentAircraft.photos[
@@ -550,8 +572,10 @@ function openOrder() {
             const img =
                 document.createElement("img");
 
+
             img.src =
                 currentAircraft.photos[index];
+
 
             img.alt =
                 `Foto selecionada ${index + 1}`;
@@ -660,4 +684,3 @@ document.addEventListener(
     }
 );
 ```
-
