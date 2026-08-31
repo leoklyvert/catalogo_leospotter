@@ -1,4 +1,3 @@
-```javascript
 /* ==================================================
    CATÁLOGO LEOSPOTTER
    Versão 1.2.0
@@ -1391,4 +1390,3 @@ document.addEventListener(
 
     }
 );
-```
