@@ -1,75 +1,22 @@
 {
   "evento": {
-    "nome": "Encontro de Aviação",
+    "nome": "Cassilândia 2026",
     "local": "Cassilândia - MS",
     "ano": 2026
   },
-
   "aeronaves": [
     {
-      "matricula": "PT-TEST",
+      "matricula": "PP-XXX",
       "modelo": "Aeronave de demonstração",
-
       "fotos": [
         {
           "id": 1,
-          "amostra": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05",
+          "amostra": "fotos/cassilandia_2026/ppxxx/_MG_8251.png",
           "original": null
         },
         {
           "id": 2,
-          "amostra": "https://images.unsplash.com/photo-1474302770737-173ee21bab63",
-          "original": null
-        },
-        {
-          "id": 3,
-          "amostra": "https://images.unsplash.com/photo-1506947411487-a56738267384",
-          "original": null
-        },
-        {
-          "id": 4,
-          "amostra": "https://images.unsplash.com/photo-1529074963764-98f45c47344b",
-          "original": null
-        }
-      ]
-    },
-
-    {
-      "matricula": "PR-TEST",
-      "modelo": "Aeronave de demonstração",
-
-      "fotos": [
-        {
-          "id": 1,
-          "amostra": "https://images.unsplash.com/photo-1556388158-158ea5ccacbd",
-          "original": null
-        },
-        {
-          "id": 2,
-          "amostra": "https://images.unsplash.com/photo-1517479149777-5f3e1511d3ba",
-          "original": null
-        },
-        {
-          "id": 3,
-          "amostra": "https://images.unsplash.com/photo-1540962351504-03099e0a754b",
-          "original": null
-        }
-      ]
-    },
-
-    {
-      "matricula": "PP-TEST",
-      "modelo": "Aeronave de demonstração",
-
-      "fotos": [
-        {
-          "id": 1,
-          "amostra": "https://images.unsplash.com/photo-1542296332-2e4473faf563",
-          "original": null
-        },
-        {
-          "id": 2,
-          "amostra": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05",
+          "amostra": "fotos/cassilandia_2026/ppxxx/_MG_8267.png",
           "original": null
         }
       ]
