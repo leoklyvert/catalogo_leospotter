@@ -1,375 +1,492 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>LeoSpotter | Fotografia de Aviação</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 </head>
+
 
 <body>
 
-    <!-- =========================
-         HERO
-    ========================== -->
 
-    <header class="hero">
+<!-- ==================================================
+     HERO
+================================================== -->
 
-        <div class="hero-overlay"></div>
+<header class="hero">
 
-        <div class="hero-content">
+    <div class="hero-background"></div>
 
-            <img
-                src="assets/logo.jpg"
-                alt="LeoSpotter"
-                class="hero-logo"
-            >
+    <div class="hero-overlay"></div>
 
-            <span class="hero-kicker">
-                FOTOGRAFIA DE AVIAÇÃO
+
+    <div class="hero-content">
+
+        <img
+            src="assets/logo.jpg"
+            alt="LeoSpotter"
+            class="hero-logo"
+        >
+
+
+        <span class="hero-kicker">
+            FOTOGRAFIA DE AVIAÇÃO
+        </span>
+
+
+        <h1>
+            Encontre as fotos<br>
+            da sua aeronave.
+        </h1>
+
+
+        <p class="hero-description">
+            Procure pela matrícula e veja todas as fotografias
+            registradas durante o evento.
+        </p>
+
+
+        <!-- BUSCA -->
+
+        <div class="search-container">
+
+            <span class="search-icon">
+                ⌕
             </span>
 
-            <h1>
-                Encontre as fotos<br>
-                da sua aeronave.
-            </h1>
 
-            <p class="hero-description">
-                Procure pela matrícula e veja todas as fotos
-                registradas durante o evento.
-            </p>
-
-            <div class="search-container">
-
-                <span class="search-icon">⌕</span>
-
-                <input
-                    type="search"
-                    id="searchInput"
-                    placeholder="Digite a matrícula..."
-                    autocomplete="off"
-                >
-
-            </div>
-
-        </div>
-
-        <div class="scroll-indicator">
-            <span>EXPLORAR</span>
-            <span>↓</span>
-        </div>
-
-    </header>
-
-
-    <!-- =========================
-         EVENTO
-    ========================== -->
-
-    <main>
-
-        <section class="event-section">
-
-            <div class="event-heading">
-
-                <div>
-
-                    <span class="section-kicker">
-                        CATÁLOGO DO EVENTO
-                    </span>
-
-                    <h2>
-                        Encontro de Aviação
-                    </h2>
-
-                    <p>
-                        Cassilândia — MS · 2026
-                    </p>
-
-                </div>
-
-
-                <div class="event-stats">
-
-                    <div>
-                        <strong id="aircraftCount">0</strong>
-                        <span>aeronaves</span>
-                    </div>
-
-                    <div>
-                        <strong id="photoCount">0</strong>
-                        <span>fotografias</span>
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- RESULTADO DA PESQUISA -->
-
-            <div
-                id="searchResult"
-                class="search-result"
-            ></div>
-
-
-            <!-- AERONAVES -->
-
-            <div class="aircraft-section">
-
-                <div class="section-heading">
-
-                    <div>
-                        <span class="section-kicker">
-                            AERONAVES
-                        </span>
-
-                        <h3>
-                            Fotografias do evento
-                        </h3>
-                    </div>
-
-                    <span class="gallery-note">
-                        Selecione uma aeronave para visualizar
-                    </span>
-
-                </div>
-
-
-                <div
-                    id="aircraftGrid"
-                    class="aircraft-grid"
-                ></div>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- =========================
-         GALERIA
-    ========================== -->
-
-    <div
-        id="galleryModal"
-        class="modal"
-    >
-
-        <div class="gallery-page">
-
-            <button
-                class="close-button"
-                id="closeGallery"
+            <input
+                type="search"
+                id="searchInput"
+                placeholder="Digite a matrícula..."
+                autocomplete="off"
+                spellcheck="false"
             >
-                ×
-            </button>
-
-
-            <div class="gallery-top">
-
-                <div>
-
-                    <span class="section-kicker">
-                        FOTOGRAFIAS
-                    </span>
-
-                    <h2 id="galleryTitle">
-                        ---
-                    </h2>
-
-                    <p id="galleryModel">
-                        ---
-                    </p>
-
-                </div>
-
-
-                <div class="gallery-counter">
-
-                    <strong id="selectedCount">
-                        0
-                    </strong>
-
-                    <span>
-                        selecionadas
-                    </span>
-
-                </div>
-
-            </div>
-
-
-            <div
-                id="photoGrid"
-                class="photo-grid"
-            ></div>
-
-
-            <div class="selection-bar">
-
-                <div class="selection-info">
-
-                    <strong id="selectionText">
-                        Nenhuma foto selecionada
-                    </strong>
-
-                    <span>
-                        Clique no ✓ para selecionar
-                    </span>
-
-                </div>
-
-
-                <button
-                    id="continueButton"
-                    class="primary-button"
-                    disabled
-                >
-                    Continuar →
-                </button>
-
-            </div>
 
         </div>
+
 
     </div>
 
 
-    <!-- =========================
-         VISUALIZADOR
-    ========================== -->
+    <div class="scroll-indicator">
+
+        <span>
+            EXPLORAR
+        </span>
+
+        <span>
+            ↓
+        </span>
+
+    </div>
+
+
+</header>
+
+
+
+<!-- ==================================================
+     CONTEÚDO
+================================================== -->
+
+<main>
+
+
+<section class="event-section">
+
+
+    <!-- CABEÇALHO DO EVENTO -->
+
+    <div class="event-heading">
+
+
+        <div>
+
+            <span class="section-kicker">
+                CATÁLOGO DO EVENTO
+            </span>
+
+
+            <h2>
+                Encontro de Aviação
+            </h2>
+
+
+            <p>
+                Cassilândia — MS · 2026
+            </p>
+
+        </div>
+
+
+        <div class="event-stats">
+
+
+            <div>
+
+                <strong id="aircraftCount">
+                    0
+                </strong>
+
+                <span>
+                    aeronaves
+                </span>
+
+            </div>
+
+
+            <div>
+
+                <strong id="photoCount">
+                    0
+                </strong>
+
+                <span>
+                    fotografias
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- RESULTADO DA BUSCA -->
 
     <div
-        id="photoViewer"
-        class="photo-viewer"
-    >
+        id="searchResult"
+        class="search-result"
+    ></div>
+
+
+
+    <!-- AERONAVES -->
+
+    <section class="aircraft-section">
+
+
+        <div class="section-heading">
+
+
+            <div>
+
+                <span class="section-kicker">
+                    AERONAVES
+                </span>
+
+
+                <h3>
+                    Fotografias do evento
+                </h3>
+
+            </div>
+
+
+            <span class="gallery-note">
+                Selecione uma aeronave para visualizar
+            </span>
+
+
+        </div>
+
+
+
+        <div
+            id="aircraftGrid"
+            class="aircraft-grid"
+        ></div>
+
+
+    </section>
+
+
+</section>
+
+
+</main>
+
+
+
+<!-- ==================================================
+     GALERIA
+================================================== -->
+
+<div
+    id="galleryModal"
+    class="modal"
+>
+
+
+    <div class="gallery-page">
+
 
         <button
-            id="closeViewer"
-            class="viewer-close"
+            id="closeGallery"
+            class="close-button"
+            aria-label="Fechar galeria"
         >
             ×
         </button>
 
 
-        <button
-            id="previousPhoto"
-            class="viewer-arrow viewer-left"
-        >
-            ‹
-        </button>
+
+        <div class="gallery-top">
 
 
-        <img
-            id="viewerImage"
-            src=""
-            alt="Fotografia"
-        >
+            <div>
+
+                <span class="section-kicker">
+                    FOTOGRAFIAS
+                </span>
 
 
-        <button
-            id="nextPhoto"
-            class="viewer-arrow viewer-right"
-        >
-            ›
-        </button>
-
-    </div>
+                <h2 id="galleryTitle">
+                    ---
+                </h2>
 
 
-    <!-- =========================
-         PEDIDO
-    ========================== -->
-
-    <div
-        id="orderModal"
-        class="modal"
-    >
-
-        <div class="order-box">
-
-            <button
-                class="close-button"
-                id="closeOrder"
-            >
-                ×
-            </button>
-
-
-            <span class="section-kicker">
-                SUA SELEÇÃO
-            </span>
-
-            <h2>
-                Fotos escolhidas
-            </h2>
-
-            <p class="order-description">
-                Estas são as fotografias que você selecionou.
-            </p>
-
-
-            <div
-                id="selectedPhotosList"
-                class="selected-photos-list"
-            ></div>
-
-
-            <div class="order-actions">
-
-                <button
-                    id="backToGallery"
-                    class="secondary-button"
-                >
-                    ← Voltar
-                </button>
-
-                <button
-                    id="finishButton"
-                    class="primary-button"
-                >
-                    Finalizar seleção →
-                </button>
+                <p id="galleryModel">
+                    ---
+                </p>
 
             </div>
 
+
+            <div class="gallery-counter">
+
+                <strong id="selectedCount">
+                    0
+                </strong>
+
+                <span>
+                    selecionadas
+                </span>
+
+            </div>
+
+
         </div>
+
+
+
+        <div
+            id="photoGrid"
+            class="photo-grid"
+        ></div>
+
+
+        <!-- BARRA DE SELEÇÃO -->
+
+        <div class="selection-bar">
+
+
+            <div class="selection-info">
+
+                <strong id="selectionText">
+                    Nenhuma foto selecionada
+                </strong>
+
+
+                <span>
+                    Clique no ✓ para selecionar
+                </span>
+
+            </div>
+
+
+            <button
+                id="continueButton"
+                class="primary-button"
+                disabled
+            >
+                Continuar →
+            </button>
+
+
+        </div>
+
 
     </div>
 
 
-    <!-- =========================
-         FOOTER
-    ========================== -->
+</div>
 
-    <footer>
 
-        <img
-            src="assets/logo.jpg"
-            alt="LeoSpotter"
+
+<!-- ==================================================
+     VISUALIZADOR DE FOTO
+================================================== -->
+
+<div
+    id="photoViewer"
+    class="photo-viewer"
+>
+
+
+    <button
+        id="closeViewer"
+        class="viewer-close"
+        aria-label="Fechar foto"
+    >
+        ×
+    </button>
+
+
+    <button
+        id="previousPhoto"
+        class="viewer-arrow viewer-left"
+        aria-label="Foto anterior"
+    >
+        ‹
+    </button>
+
+
+    <img
+        id="viewerImage"
+        src=""
+        alt="Fotografia da aeronave"
+    >
+
+
+    <button
+        id="nextPhoto"
+        class="viewer-arrow viewer-right"
+        aria-label="Próxima foto"
+    >
+        ›
+    </button>
+
+
+</div>
+
+
+
+<!-- ==================================================
+     SELEÇÃO / PEDIDO
+================================================== -->
+
+<div
+    id="orderModal"
+    class="modal"
+>
+
+
+    <div class="order-box">
+
+
+        <button
+            id="closeOrder"
+            class="close-button"
+            aria-label="Fechar seleção"
         >
+            ×
+        </button>
 
-        <p>
-            LeoSpotter
-        </p>
 
-        <span>
-            Fotografia de aviação por Leonardo Moreira
+        <span class="section-kicker">
+            SUA SELEÇÃO
         </span>
 
-        <small>
-            © 2026 LeoSpotter
-        </small>
 
-    </footer>
+        <h2>
+            Fotos escolhidas
+        </h2>
 
 
-    <script src="script.js"></script>
+        <p class="order-description">
+            Confira as fotografias selecionadas antes de continuar.
+        </p>
+
+
+        <div
+            id="selectedPhotosList"
+            class="selected-photos-list"
+        ></div>
+
+
+        <div class="order-actions">
+
+
+            <button
+                id="backToGallery"
+                class="secondary-button"
+            >
+                ← Voltar
+            </button>
+
+
+            <button
+                id="finishButton"
+                class="primary-button"
+            >
+                Finalizar seleção →
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+<!-- ==================================================
+     FOOTER
+================================================== -->
+
+<footer>
+
+
+    <img
+        src="assets/logo.jpg"
+        alt="LeoSpotter"
+    >
+
+
+    <p>
+        LeoSpotter
+    </p>
+
+
+    <span>
+        Fotografia de aviação por Leonardo Moreira
+    </span>
+
+
+    <small>
+        © 2026 LeoSpotter
+    </small>
+
+
+</footer>
+
+
+
+<script src="script.js"></script>
+
 
 </body>
+
 </html>
+```
