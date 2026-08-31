@@ -1,8 +1,13 @@
-```javascript
+/* ==================================================
+   DADOS DE TESTE
+================================================== */
+
 const aircraft = [
+
     {
         registration: "PT-TEST",
         model: "Aeronave de demonstração",
+
         photos: [
             "https://images.unsplash.com/photo-1436491865332-7a61a109cc05",
             "https://images.unsplash.com/photo-1474302770737-173ee21bab63",
@@ -11,9 +16,11 @@ const aircraft = [
         ]
     },
 
+
     {
         registration: "PR-TEST",
         model: "Aeronave de demonstração",
+
         photos: [
             "https://images.unsplash.com/photo-1556388158-158ea5ccacbd",
             "https://images.unsplash.com/photo-1517479149777-5f3e1511d3ba",
@@ -21,75 +28,106 @@ const aircraft = [
         ]
     },
 
+
     {
         registration: "PP-TEST",
         model: "Aeronave de demonstração",
+
         photos: [
             "https://images.unsplash.com/photo-1542296332-2e4473faf563",
             "https://images.unsplash.com/photo-1436491865332-7a61a109cc05"
         ]
     }
+
 ];
 
 
+/* ==================================================
+   ESTADO
+================================================== */
+
 let currentAircraft = null;
+
 let currentPhotoIndex = 0;
+
 let selectedPhotos = [];
 
+
+/* ==================================================
+   ELEMENTOS
+================================================== */
 
 const aircraftGrid =
     document.getElementById("aircraftGrid");
 
+
 const photoGrid =
     document.getElementById("photoGrid");
+
 
 const galleryModal =
     document.getElementById("galleryModal");
 
+
 const orderModal =
     document.getElementById("orderModal");
+
 
 const photoViewer =
     document.getElementById("photoViewer");
 
+
 const viewerImage =
     document.getElementById("viewerImage");
+
 
 const galleryTitle =
     document.getElementById("galleryTitle");
 
+
 const galleryModel =
     document.getElementById("galleryModel");
+
 
 const selectedCount =
     document.getElementById("selectedCount");
 
+
 const selectionText =
     document.getElementById("selectionText");
 
+
 const continueButton =
     document.getElementById("continueButton");
+
 
 const searchInput =
     document.getElementById("searchInput");
 
 
-/* =========================================
+const searchResult =
+    document.getElementById("searchResult");
+
+
+/* ==================================================
    INICIALIZAÇÃO
-========================================= */
+================================================== */
 
 renderAircraft();
+
 updateSummary();
 
 
-/* =========================================
+/* ==================================================
    RESUMO
-========================================= */
+================================================== */
 
 function updateSummary() {
 
-    document.getElementById("aircraftCount").textContent =
-        aircraft.length;
+    document.getElementById(
+        "aircraftCount"
+    ).textContent = aircraft.length;
+
 
     const totalPhotos =
         aircraft.reduce(
@@ -98,96 +136,128 @@ function updateSummary() {
             0
         );
 
-    document.getElementById("photoCount").textContent =
-        totalPhotos;
+
+    document.getElementById(
+        "photoCount"
+    ).textContent = totalPhotos;
+
 }
 
 
-/* =========================================
+/* ==================================================
    MOSTRAR AERONAVES
-========================================= */
+================================================== */
 
-function renderAircraft(list = aircraft) {
+function renderAircraft(
+    list = aircraft
+) {
 
     aircraftGrid.innerHTML = "";
+
 
     if (list.length === 0) {
 
         aircraftGrid.innerHTML = `
-            <div class="search-result">
-                <strong>Nenhuma aeronave encontrada.</strong>
-                <span>Verifique a matrícula digitada.</span>
+
+            <div class="search-empty">
+
+                <strong>
+                    Nenhuma aeronave encontrada.
+                </strong>
+
+                <span>
+                    Tente outra matrícula.
+                </span>
+
             </div>
+
         `;
 
         return;
     }
 
 
-    list.forEach((plane) => {
+    list.forEach(
+        (plane) => {
 
-        const originalIndex =
-            aircraft.indexOf(plane);
-
-        const card =
-            document.createElement("article");
-
-        card.className =
-            "aircraft-card";
+            const originalIndex =
+                aircraft.indexOf(plane);
 
 
-        card.innerHTML = `
-            <img
-                src="${plane.photos[0]}"
-                class="aircraft-image"
-                alt="${plane.registration}"
-                loading="lazy"
-            >
+            const card =
+                document.createElement(
+                    "article"
+                );
 
-            <div class="aircraft-info">
 
-                <div class="aircraft-registration">
-                    ${plane.registration}
-                </div>
+            card.className =
+                "aircraft-card";
 
-                <div class="aircraft-model">
-                    ${plane.model}
-                </div>
 
-                <div class="photo-number">
-                    ${plane.photos.length}
-                    ${plane.photos.length === 1
-                        ? "FOTOGRAFIA"
-                        : "FOTOGRAFIAS"}
-                </div>
+            card.innerHTML = `
 
-                <button
-                    class="view-button"
-                    type="button"
+                <img
+                    src="${plane.photos[0]}"
+                    class="aircraft-image"
+                    alt="${plane.registration}"
+                    loading="lazy"
                 >
-                    VER FOTOGRAFIAS →
-                </button>
-
-            </div>
-        `;
 
 
-        card.addEventListener(
-            "click",
-            () => openGallery(originalIndex)
-        );
+                <div class="aircraft-info">
+
+                    <div class="aircraft-registration">
+                        ${plane.registration}
+                    </div>
 
 
-        aircraftGrid.appendChild(card);
+                    <div class="aircraft-model">
+                        ${plane.model}
+                    </div>
 
-    });
+
+                    <div class="photo-number">
+
+                        ${plane.photos.length}
+
+                        ${
+                            plane.photos.length === 1
+                                ? "FOTOGRAFIA"
+                                : "FOTOGRAFIAS"
+                        }
+
+                    </div>
+
+
+                    <button
+                        class="view-button"
+                        type="button"
+                    >
+                        VER FOTOGRAFIAS →
+                    </button>
+
+                </div>
+
+            `;
+
+
+            card.addEventListener(
+                "click",
+                () => openGallery(originalIndex)
+            );
+
+
+            aircraftGrid.appendChild(card);
+
+        }
+    );
 
 }
 
 
-/* =========================================
-   PESQUISA
-========================================= */
+/* ==================================================
+   PESQUISA POR MATRÍCULA
+================================================== */
 
 searchInput.addEventListener(
     "input",
@@ -199,73 +269,148 @@ searchInput.addEventListener(
                 .toLowerCase();
 
 
-        const filtered =
-            aircraft.filter(plane =>
-                plane.registration
-                    .toLowerCase()
-                    .includes(term)
-            );
-
-
-        renderAircraft(filtered);
-
-
-        const result =
-            document.getElementById("searchResult");
-
+        /* Campo vazio */
 
         if (term === "") {
 
-            result.innerHTML = "";
+            searchResult.innerHTML = "";
+
+            renderAircraft();
 
             return;
         }
 
 
+        /* Procura */
+
+        const filtered =
+            aircraft.filter(
+                plane =>
+                    plane.registration
+                        .toLowerCase()
+                        .includes(term)
+            );
+
+
+        /* Nenhum resultado */
+
         if (filtered.length === 0) {
 
-            result.innerHTML = `
-                <strong>
-                    Nenhuma aeronave encontrada
-                </strong>
+            searchResult.innerHTML = `
 
-                <span>
-                    Não encontramos a matrícula "${this.value.toUpperCase()}".
-                </span>
+                <div class="search-empty">
+
+                    <strong>
+                        Nenhuma aeronave encontrada
+                    </strong>
+
+                    <span>
+                        Não encontramos
+                        "${this.value.toUpperCase()}".
+                    </span>
+
+                </div>
+
             `;
 
-        } else {
 
-            result.innerHTML = `
-                <strong>
-                    ${filtered.length}
-                    ${filtered.length === 1
-                        ? "aeronave encontrada"
-                        : "aeronaves encontradas"}
-                </strong>
+            aircraftGrid.innerHTML = "";
 
-                <span>
-                    Resultado para "${this.value.toUpperCase()}"
-                </span>
-            `;
-
+            return;
         }
+
+
+        /*
+         * Resultado encontrado.
+         *
+         * Mostramos o primeiro resultado
+         * em destaque.
+         */
+
+        const plane =
+            filtered[0];
+
+
+        const originalIndex =
+            aircraft.indexOf(plane);
+
+
+        searchResult.innerHTML = `
+
+            <div
+                class="search-result-content"
+                id="searchAircraftResult"
+            >
+
+                <div>
+
+                    <span class="search-result-label">
+                        AERONAVE ENCONTRADA
+                    </span>
+
+
+                    <strong>
+                        ${plane.registration}
+                    </strong>
+
+
+                    <span class="search-result-model">
+                        ${plane.model}
+                        ·
+                        ${plane.photos.length}
+                        ${
+                            plane.photos.length === 1
+                                ? "fotografia"
+                                : "fotografias"
+                        }
+                    </span>
+
+                </div>
+
+
+                <div class="search-result-arrow">
+                    →
+                </div>
+
+            </div>
+
+        `;
+
+
+        document
+            .getElementById(
+                "searchAircraftResult"
+            )
+            .addEventListener(
+                "click",
+                () => openGallery(originalIndex)
+            );
+
+
+        /*
+         * Esconde os cards enquanto
+         * a pesquisa está ativa.
+         */
+
+        aircraftGrid.innerHTML = "";
 
     }
 );
 
 
-/* =========================================
+/* ==================================================
    ABRIR GALERIA
-========================================= */
+================================================== */
 
 function openGallery(index) {
 
     currentAircraft =
         aircraft[index];
 
+
     galleryTitle.textContent =
         currentAircraft.registration;
+
 
     galleryModel.textContent =
         currentAircraft.model;
@@ -279,16 +424,20 @@ function openGallery(index) {
     updateSelection();
 
 
-    galleryModal.classList.add("active");
+    galleryModal.classList.add(
+        "active"
+    );
+
 
     document.body.style.overflow =
         "hidden";
+
 }
 
 
-/* =========================================
+/* ==================================================
    FECHAR GALERIA
-========================================= */
+================================================== */
 
 document
     .getElementById("closeGallery")
@@ -300,7 +449,10 @@ document
 
 function closeGallery() {
 
-    galleryModal.classList.remove("active");
+    galleryModal.classList.remove(
+        "active"
+    );
+
 
     document.body.style.overflow =
         "";
@@ -308,9 +460,9 @@ function closeGallery() {
 }
 
 
-/* =========================================
+/* ==================================================
    RENDERIZAR FOTOS
-========================================= */
+================================================== */
 
 function renderPhotos() {
 
@@ -321,42 +473,63 @@ function renderPhotos() {
         (photo, index) => {
 
             const card =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
+
 
             card.className =
                 "photo-card";
 
 
             const selected =
-                selectedPhotos.includes(index);
+                selectedPhotos.includes(
+                    index
+                );
 
 
             if (selected) {
-                card.classList.add("selected");
+
+                card.classList.add(
+                    "selected"
+                );
+
             }
 
 
             card.innerHTML = `
+
                 <img
                     src="${photo}"
-                    alt="Foto ${index + 1}"
+                    alt="Fotografia ${index + 1}"
                     loading="lazy"
                 >
+
 
                 <div
                     class="select-check"
                     title="Selecionar fotografia"
                 >
-                    ${selected ? "✓" : "+"}
+                    ${
+                        selected
+                            ? "✓"
+                            : "+"
+                    }
                 </div>
+
             `;
 
 
             const image =
-                card.querySelector("img");
+                card.querySelector(
+                    "img"
+                );
+
 
             const check =
-                card.querySelector(".select-check");
+                card.querySelector(
+                    ".select-check"
+                );
 
 
             image.addEventListener(
@@ -385,13 +558,15 @@ function renderPhotos() {
 }
 
 
-/* =========================================
+/* ==================================================
    SELECIONAR FOTO
-========================================= */
+================================================== */
 
 function togglePhoto(index) {
 
-    if (selectedPhotos.includes(index)) {
+    if (
+        selectedPhotos.includes(index)
+    ) {
 
         selectedPhotos =
             selectedPhotos.filter(
@@ -412,9 +587,9 @@ function togglePhoto(index) {
 }
 
 
-/* =========================================
+/* ==================================================
    ATUALIZAR SELEÇÃO
-========================================= */
+================================================== */
 
 function updateSelection() {
 
@@ -431,6 +606,7 @@ function updateSelection() {
         selectionText.textContent =
             "Nenhuma foto selecionada";
 
+
         continueButton.disabled =
             true;
 
@@ -443,6 +619,7 @@ function updateSelection() {
                     : "fotos selecionadas"
             }`;
 
+
         continueButton.disabled =
             false;
 
@@ -451,9 +628,9 @@ function updateSelection() {
 }
 
 
-/* =========================================
+/* ==================================================
    VISUALIZADOR
-========================================= */
+================================================== */
 
 function openViewer(index) {
 
@@ -465,7 +642,9 @@ function openViewer(index) {
         currentAircraft.photos[index];
 
 
-    photoViewer.classList.add("active");
+    photoViewer.classList.add(
+        "active"
+    );
 
 }
 
@@ -480,14 +659,16 @@ document
 
 function closeViewer() {
 
-    photoViewer.classList.remove("active");
+    photoViewer.classList.remove(
+        "active"
+    );
 
 }
 
 
-/* =========================================
+/* ==================================================
    FOTO ANTERIOR
-========================================= */
+================================================== */
 
 document
     .getElementById("previousPhoto")
@@ -497,12 +678,16 @@ document
 
             currentPhotoIndex--;
 
-            if (currentPhotoIndex < 0) {
+
+            if (
+                currentPhotoIndex < 0
+            ) {
 
                 currentPhotoIndex =
                     currentAircraft.photos.length - 1;
 
             }
+
 
             viewerImage.src =
                 currentAircraft.photos[
@@ -513,9 +698,9 @@ document
     );
 
 
-/* =========================================
+/* ==================================================
    PRÓXIMA FOTO
-========================================= */
+================================================== */
 
 document
     .getElementById("nextPhoto")
@@ -545,9 +730,9 @@ document
     );
 
 
-/* =========================================
-   CONTINUAR
-========================================= */
+/* ==================================================
+   ABRIR REVISÃO DA SELEÇÃO
+================================================== */
 
 continueButton.addEventListener(
     "click",
@@ -570,15 +755,19 @@ function openOrder() {
         index => {
 
             const img =
-                document.createElement("img");
+                document.createElement(
+                    "img"
+                );
 
 
             img.src =
-                currentAircraft.photos[index];
+                currentAircraft.photos[
+                    index
+                ];
 
 
             img.alt =
-                `Foto selecionada ${index + 1}`;
+                `Fotografia selecionada ${index + 1}`;
 
 
             list.appendChild(img);
@@ -587,14 +776,16 @@ function openOrder() {
     );
 
 
-    orderModal.classList.add("active");
+    orderModal.classList.add(
+        "active"
+    );
 
 }
 
 
-/* =========================================
-   FECHAR PEDIDO
-========================================= */
+/* ==================================================
+   FECHAR REVISÃO
+================================================== */
 
 document
     .getElementById("closeOrder")
@@ -602,15 +793,17 @@ document
         "click",
         () => {
 
-            orderModal.classList.remove("active");
+            orderModal.classList.remove(
+                "active"
+            );
 
         }
     );
 
 
-/* =========================================
+/* ==================================================
    VOLTAR PARA GALERIA
-========================================= */
+================================================== */
 
 document
     .getElementById("backToGallery")
@@ -618,15 +811,17 @@ document
         "click",
         () => {
 
-            orderModal.classList.remove("active");
+            orderModal.classList.remove(
+                "active"
+            );
 
         }
     );
 
 
-/* =========================================
+/* ==================================================
    FINALIZAR
-========================================= */
+================================================== */
 
 document
     .getElementById("finishButton")
@@ -635,52 +830,65 @@ document
         () => {
 
             alert(
-                "Sua seleção foi registrada nesta demonstração. Na próxima etapa vamos transformar isso em um pedido real."
+                "Sua seleção foi registrada nesta demonstração."
             );
 
         }
     );
 
 
-/* =========================================
+/* ==================================================
    TECLADO
-========================================= */
+================================================== */
 
 document.addEventListener(
     "keydown",
     event => {
 
         if (
-            !photoViewer.classList.contains("active")
+            !photoViewer.classList.contains(
+                "active"
+            )
         ) {
+
             return;
+
         }
 
 
-        if (event.key === "Escape") {
+        if (
+            event.key === "Escape"
+        ) {
 
             closeViewer();
 
         }
 
 
-        if (event.key === "ArrowLeft") {
+        if (
+            event.key === "ArrowLeft"
+        ) {
 
             document
-                .getElementById("previousPhoto")
+                .getElementById(
+                    "previousPhoto"
+                )
                 .click();
 
         }
 
 
-        if (event.key === "ArrowRight") {
+        if (
+            event.key === "ArrowRight"
+        ) {
 
             document
-                .getElementById("nextPhoto")
+                .getElementById(
+                    "nextPhoto"
+                )
                 .click();
 
         }
 
     }
 );
-```
