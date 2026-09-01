@@ -387,7 +387,11 @@ function renderAircraft(list = aircraft) {
         (plane) => {
 
             const originalIndex =
-                aircraft.indexOf(plane);
+    aircraft.findIndex(
+        item =>
+            normalizeSearch(item.matricula) ===
+            normalizeSearch(plane.matricula)
+    );
 
 
             const card =
