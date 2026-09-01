@@ -894,34 +894,36 @@ function alternarSelecao(
 
 function atualizarSelecao() {
 
-    document
-        .querySelectorAll(
+    const checkboxes =
+        document.querySelectorAll(
             "#photoGrid input[type='checkbox']"
-        )
-        .forEach(
-            function (checkbox) {
-
-                const index =
-                    Number(
-                        checkbox.dataset.photoIndex
-                    );
-
-                checkbox.checked =
-                    fotosSelecionadas.includes(
-                        index
-                    );
-
-                const card =
-                    checkbox.closest(".photo-card");
-
-                if (card) {
-                    card.classList.toggle(
-                        "selected",
-                        checkbox.checked
-                    );
-                }
-            }
         );
+
+    checkboxes.forEach(
+        function (checkbox) {
+
+            const index =
+                Number(
+                    checkbox.dataset.photoIndex
+                );
+
+            const selecionada =
+                fotosSelecionadas.includes(index);
+
+            checkbox.checked =
+                selecionada;
+
+            const card =
+                checkbox.closest(".photo-card");
+
+            if (card) {
+                card.classList.toggle(
+                    "selected",
+                    selecionada
+                );
+            }
+        }
+    );
 
     const selectedCount =
         document.getElementById(
@@ -933,15 +935,11 @@ function atualizarSelecao() {
             "selectionText"
         );
 
-    /* Contador */
-
     if (selectedCount) {
 
         selectedCount.textContent =
             fotosSelecionadas.length;
     }
-
-    /* Texto */
 
     if (selectionText) {
 
@@ -966,18 +964,20 @@ function atualizarSelecao() {
         }
     }
 
-    /* Botão CONTINUAR */
+    /* HABILITA / DESABILITA CONTINUAR */
 
     if (continueButton) {
 
         continueButton.disabled =
             fotosSelecionadas.length === 0;
-    }
 
-    console.log(
-        "[LeoSpotter] Seleção atualizada:",
-        fotosSelecionadas
-    );
+        console.log(
+            "[LeoSpotter] Botão Continuar:",
+            continueButton.disabled
+                ? "DESABILITADO"
+                : "HABILITADO"
+        );
+    }
 }
 
 /* ==================================================
