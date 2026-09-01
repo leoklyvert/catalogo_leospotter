@@ -1,1603 +1,1040 @@
 /* ==================================================
-LEOSPOTTER
-CATÁLOGO DE FOTOGRAFIAS
-SCRIPT V1.2.2
-================================================== */
+   LEOSPOTTER
+   CATÁLOGO DE FOTOGRAFIAS
+   SCRIPT V1.2.3
+   ================================================== */
+
+"use strict";
+
+let catalogo = null;
+let aeronaveAtual = null;
+let indiceFotoAtual = 0;
+let fotosSelecionadas = [];
 
 /* ==================================================
-ESTADO
-================================================== */
+   ELEMENTOS
+   ================================================== */
 
-let catalogo = {
-evento: {},
-aeronaves: []
-};
+let searchInput;
+let searchResult;
+let aircraftGrid;
 
-let currentAircraft = null;
-let currentPhotoIndex = 0;
-let selectedPhotos = [];
+let galleryModal;
+let galleryTitle;
+let galleryModel;
+let photoGrid;
+let closeGallery;
 
-/* ==================================================
-ELEMENTOS
-================================================== */
+let photoViewer;
+let viewerImage;
+let closeViewer;
+let previousPhoto;
+let nextPhoto;
 
-const aircraftGrid = document.getElementById("aircraftGrid");
-const photoGrid = document.getElementById("photoGrid");
-
-const galleryModal = document.getElementById("galleryModal");
-const orderModal = document.getElementById("orderModal");
-
-const photoViewer = document.getElementById("photoViewer");
-const viewerImage = document.getElementById("viewerImage");
-
-const galleryTitle = document.getElementById("galleryTitle");
-const galleryModel = document.getElementById("galleryModel");
-
-const searchInput = document.getElementById("searchInput");
-const searchResult = document.getElementById("searchResult");
-
-const selectedCount = document.getElementById("selectedCount");
-const selectionText = document.getElementById("selectionText");
-
-const continueButton = document.getElementById("continueButton");
-
-const selectedPhotosList =
-document.getElementById("selectedPhotosList");
+let orderModal;
+let selectedPhotosList;
+let closeOrder;
+let backToGallery;
 
 /* ==================================================
-INICIALIZAÇÃO
-================================================== */
+   INICIALIZAÇÃO
+   ================================================== */
 
-document.addEventListener(
-"DOMContentLoaded",
-iniciar
-);
+document.addEventListener("DOMContentLoaded", iniciar);
 
 async function iniciar() {
 
-```
-await carregarCatalogo();
-```
+    console.log("[LeoSpotter] Inicializando V1.2.3");
 
-}
+    obterElementos();
 
-/* ==================================================
-CARREGAR JSON
-================================================== */
+    try {
 
-async function carregarCatalogo() {
-
-```
-try {
-
-    const resposta =
-        await fetch(
-            "data/catalogo.json?versao=122",
+        const resposta = await fetch(
+            "data/catalogo.json?v=1.2.3",
             {
                 cache: "no-store"
             }
         );
 
+        if (!resposta.ok) {
+            throw new Error(
+                `Erro HTTP ${resposta.status} ao carregar catalogo.json`
+            );
+        }
 
-    if (!resposta.ok) {
+        catalogo = await resposta.json();
 
-        throw new Error(
-            "HTTP " + resposta.status
+        console.log(
+            "[LeoSpotter] Catálogo carregado:",
+            catalogo
         );
 
-    }
+        prepararEventos();
 
+        renderizarCatalogo();
 
-    catalogo =
-        await resposta.json();
+        console.log("[LeoSpotter] Sistema pronto.");
 
+    } catch (erro) {
 
-    if (
-        !Array.isArray(
-            catalogo.aeronaves
-        )
-    ) {
-
-        throw new Error(
-            "O arquivo catalogo.json não possui uma lista de aeronaves."
+        console.error(
+            "[LeoSpotter] Erro ao iniciar:",
+            erro
         );
 
+        if (searchResult) {
+            searchResult.innerHTML = `
+                <div class="search-message">
+                    Erro ao carregar o catálogo.
+                </div>
+            `;
+        }
+    }
+}
+
+/* ==================================================
+   OBTER ELEMENTOS DO HTML
+   ================================================== */
+
+function obterElementos() {
+
+    searchInput = document.getElementById("searchInput");
+    searchResult = document.getElementById("searchResult");
+    aircraftGrid = document.getElementById("aircraftGrid");
+
+    galleryModal = document.getElementById("galleryModal");
+    galleryTitle = document.getElementById("galleryTitle");
+    galleryModel = document.getElementById("galleryModel");
+    photoGrid = document.getElementById("photoGrid");
+    closeGallery = document.getElementById("closeGallery");
+
+    photoViewer = document.getElementById("photoViewer");
+    viewerImage = document.getElementById("viewerImage");
+    closeViewer = document.getElementById("closeViewer");
+    previousPhoto = document.getElementById("previousPhoto");
+    nextPhoto = document.getElementById("nextPhoto");
+
+    orderModal = document.getElementById("orderModal");
+    selectedPhotosList = document.getElementById("selectedPhotosList");
+    closeOrder = document.getElementById("closeOrder");
+    backToGallery = document.getElementById("backToGallery");
+
+    console.log("[LeoSpotter] Elementos encontrados:", {
+        searchInput: !!searchInput,
+        searchResult: !!searchResult,
+        aircraftGrid: !!aircraftGrid,
+        galleryModal: !!galleryModal,
+        photoGrid: !!photoGrid,
+        photoViewer: !!photoViewer,
+        orderModal: !!orderModal
+    });
+}
+
+/* ==================================================
+   EVENTOS
+   ================================================== */
+
+function prepararEventos() {
+
+    /* -----------------------------
+       PESQUISA
+       ----------------------------- */
+
+    if (searchInput) {
+
+        searchInput.addEventListener(
+            "input",
+            pesquisarAeronave
+        );
     }
 
+    /*
+       EVENT DELEGATION
 
-    atualizarEvento();
+       Em vez de criar listeners individuais
+       nos resultados, capturamos o clique
+       diretamente no container.
+    */
+
+    if (searchResult) {
+
+        searchResult.addEventListener(
+            "click",
+            function (evento) {
+
+                const resultado =
+                    evento.target.closest(
+                        "[data-matricula]"
+                    );
+
+                if (!resultado) {
+                    return;
+                }
+
+                const matricula =
+                    resultado.dataset.matricula;
+
+                console.log(
+                    "[LeoSpotter] Resultado clicado:",
+                    matricula
+                );
+
+                const aeronave =
+                    encontrarAeronave(matricula);
+
+                if (!aeronave) {
+
+                    console.error(
+                        "[LeoSpotter] Aeronave não encontrada:",
+                        matricula
+                    );
+
+                    return;
+                }
+
+                abrirGaleria(aeronave);
+            }
+        );
+    }
+
+    /* -----------------------------
+       GALERIA
+       ----------------------------- */
+
+    if (closeGallery) {
+
+        closeGallery.addEventListener(
+            "click",
+            fecharGaleria
+        );
+    }
+
+    /* -----------------------------
+       VISUALIZADOR
+       ----------------------------- */
+
+    if (closeViewer) {
+
+        closeViewer.addEventListener(
+            "click",
+            fecharVisualizador
+        );
+    }
+
+    if (previousPhoto) {
+
+        previousPhoto.addEventListener(
+            "click",
+            fotoAnterior
+        );
+    }
+
+    if (nextPhoto) {
+
+        nextPhoto.addEventListener(
+            "click",
+            proximaFoto
+        );
+    }
+
+    /* -----------------------------
+       PEDIDO
+       ----------------------------- */
+
+    if (closeOrder) {
+
+        closeOrder.addEventListener(
+            "click",
+            fecharPedido
+        );
+    }
+
+    if (backToGallery) {
+
+        backToGallery.addEventListener(
+            "click",
+            function () {
+
+                fecharPedido();
+
+                if (galleryModal) {
+                    galleryModal.classList.add("active");
+                }
+            }
+        );
+    }
+
+    /* -----------------------------
+       ESC
+       ----------------------------- */
+
+    document.addEventListener(
+        "keydown",
+        function (evento) {
+
+            if (evento.key !== "Escape") {
+                return;
+            }
+
+            fecharVisualizador();
+            fecharPedido();
+            fecharGaleria();
+        }
+    );
+}
+
+/* ==================================================
+   RENDERIZAR CATÁLOGO
+   ================================================== */
+
+function renderizarCatalogo() {
+
+    if (!catalogo || !catalogo.aeronaves) {
+        return;
+    }
+
+    if (!aircraftGrid) {
+        return;
+    }
+
+    aircraftGrid.innerHTML = "";
+
+    catalogo.aeronaves.forEach(
+        function (aeronave) {
+
+            const card =
+                document.createElement("div");
+
+            card.className = "aircraft-card";
+
+            card.dataset.matricula =
+                aeronave.matricula;
+
+            card.innerHTML = `
+                <div class="aircraft-registration">
+                    ${escaparHTML(aeronave.matricula)}
+                </div>
+
+                <div class="aircraft-model">
+                    ${escaparHTML(
+                        aeronave.modelo || ""
+                    )}
+                </div>
+
+                <div class="aircraft-photo-count">
+                    ${
+                        Array.isArray(aeronave.fotos)
+                            ? aeronave.fotos.length
+                            : 0
+                    }
+                    foto(s)
+                </div>
+            `;
+
+            card.addEventListener(
+                "click",
+                function () {
+
+                    abrirGaleria(aeronave);
+                }
+            );
+
+            aircraftGrid.appendChild(card);
+        }
+    );
 
     atualizarResumo();
-
-    mostrarAeronaves(
-        catalogo.aeronaves
-    );
-
-
-    console.log(
-        "CATÁLOGO CARREGADO:",
-        catalogo
-    );
-
-
-} catch (erro) {
-
-    console.error(
-        "ERRO AO CARREGAR CATÁLOGO:",
-        erro
-    );
-
-
-    if (aircraftGrid) {
-
-        aircraftGrid.innerHTML = `
-
-            <div class="search-empty">
-
-                <strong>
-                    Erro ao carregar o catálogo.
-                </strong>
-
-                <span>
-                    Verifique data/catalogo.json.
-                </span>
-
-            </div>
-
-        `;
-
-    }
-
-}
-```
-
 }
 
 /* ==================================================
-EVENTO
-================================================== */
-
-function atualizarEvento() {
-
-```
-const titulo =
-    document.querySelector(
-        ".event-heading h2"
-    );
-
-
-const descricao =
-    document.querySelector(
-        ".event-heading p"
-    );
-
-
-if (titulo) {
-
-    titulo.textContent =
-        catalogo.evento?.nome ||
-        "Confira o último evento";
-
-}
-
-
-if (descricao) {
-
-    const local =
-        catalogo.evento?.local || "";
-
-    const ano =
-        catalogo.evento?.ano || "";
-
-
-    descricao.textContent =
-        `${local} · ${ano}`;
-
-}
-```
-
-}
-
-/* ==================================================
-RESUMO
-================================================== */
+   RESUMO DO EVENTO
+   ================================================== */
 
 function atualizarResumo() {
 
-```
-const aircraftCount =
-    document.getElementById(
-        "aircraftCount"
-    );
+    const aircraftCount =
+        document.getElementById(
+            "aircraftCount"
+        );
 
+    const photoCount =
+        document.getElementById(
+            "photoCount"
+        );
 
-const photoCount =
-    document.getElementById(
-        "photoCount"
-    );
-
-
-const aeronaves =
-    catalogo.aeronaves || [];
-
-
-const totalFotos =
-    aeronaves.reduce(
-        (total, aeronave) => {
-
-            if (
-                !Array.isArray(
-                    aeronave.fotos
-                )
-            ) {
-
-                return total;
-
-            }
-
-
-            return (
-                total +
-                aeronave.fotos.length
-            );
-
-        },
-        0
-    );
-
-
-if (aircraftCount) {
-
-    aircraftCount.textContent =
-        aeronaves.length;
-
-}
-
-
-if (photoCount) {
-
-    photoCount.textContent =
-        totalFotos;
-
-}
-```
-
-}
-
-/* ==================================================
-FOTO DE AMOSTRA
-================================================== */
-
-function fotoAmostra(aeronave) {
-
-```
-if (
-    !aeronave ||
-    !Array.isArray(
-        aeronave.fotos
-    )
-) {
-
-    return "";
-
-}
-
-
-for (
-    const foto of aeronave.fotos
-) {
-
-    if (
-        foto &&
-        typeof foto.amostra === "string" &&
-        foto.amostra.trim() !== ""
-    ) {
-
-        return foto.amostra;
-
+    if (!catalogo || !catalogo.aeronaves) {
+        return;
     }
 
-}
+    const totalAeronaves =
+        catalogo.aeronaves.length;
 
+    let totalFotos = 0;
 
-return "";
-```
+    catalogo.aeronaves.forEach(
+        function (aeronave) {
 
+            if (Array.isArray(aeronave.fotos)) {
+
+                totalFotos +=
+                    aeronave.fotos.length;
+            }
+        }
+    );
+
+    if (aircraftCount) {
+        aircraftCount.textContent =
+            totalAeronaves;
+    }
+
+    if (photoCount) {
+        photoCount.textContent =
+            totalFotos;
+    }
 }
 
 /* ==================================================
-MOSTRAR AERONAVES
-================================================== */
+   PESQUISA
+   ================================================== */
 
-function mostrarAeronaves(
-lista
-) {
+function pesquisarAeronave() {
 
-```
-if (!aircraftGrid) {
-    return;
-}
+    if (!searchInput || !searchResult) {
+        return;
+    }
 
+    const termo =
+        normalizarMatricula(
+            searchInput.value
+        );
 
-aircraftGrid.innerHTML =
-    "";
+    searchResult.innerHTML = "";
 
+    if (!termo) {
+        return;
+    }
 
-if (
-    !Array.isArray(lista) ||
-    lista.length === 0
-) {
+    if (!catalogo || !catalogo.aeronaves) {
+        return;
+    }
 
-    aircraftGrid.innerHTML = `
+    const encontrados =
+        catalogo.aeronaves.filter(
+            function (aeronave) {
 
-        <div class="search-empty">
-
-            <strong>
-                Nenhuma aeronave encontrada.
-            </strong>
-
-        </div>
-
-    `;
-
-    return;
-
-}
-
-
-lista.forEach(
-    aeronave => {
-
-        const card =
-            document.createElement(
-                "article"
-            );
-
-
-        card.className =
-            "aircraft-card";
-
-
-        const imagem =
-            document.createElement(
-                "img"
-            );
-
-
-        imagem.className =
-            "aircraft-image";
-
-
-        imagem.alt =
-            aeronave.matricula || "Aeronave";
-
-
-        imagem.loading =
-            "lazy";
-
-
-        imagem.src =
-            fotoAmostra(
-                aeronave
-            );
-
-
-        const info =
-            document.createElement(
-                "div"
-            );
-
-
-        info.className =
-            "aircraft-info";
-
-
-        info.innerHTML = `
-
-            <div class="aircraft-registration">
-                ${aeronave.matricula || ""}
-            </div>
-
-            <div class="aircraft-model">
-                ${aeronave.modelo || "Modelo não informado"}
-            </div>
-
-            <div class="photo-number">
-                ${(aeronave.fotos || []).length}
-                ${
-                    (aeronave.fotos || []).length === 1
-                        ? "FOTOGRAFIA"
-                        : "FOTOGRAFIAS"
-                }
-            </div>
-
-            <button
-                type="button"
-                class="view-button"
-            >
-                VER FOTOGRAFIAS →
-            </button>
-
-        `;
-
-
-        const botao =
-            info.querySelector(
-                ".view-button"
-            );
-
-
-        /*
-           BOTÃO
-        */
-
-        if (botao) {
-
-            botao.addEventListener(
-                "click",
-                function(event) {
-
-                    event.preventDefault();
-
-                    event.stopPropagation();
-
-                    abrirGaleria(
-                        aeronave
+                const matricula =
+                    normalizarMatricula(
+                        aeronave.matricula
                     );
 
-                }
-            );
-
-        }
-
-
-        /*
-           CARD
-        */
-
-        card.addEventListener(
-            "click",
-            function() {
-
-                abrirGaleria(
-                    aeronave
+                return matricula.includes(
+                    termo
                 );
-
             }
         );
 
-
-        card.appendChild(
-            imagem
-        );
-
-
-        card.appendChild(
-            info
-        );
-
-
-        aircraftGrid.appendChild(
-            card
-        );
-
-    }
-);
-```
-
-}
-
-/* ==================================================
-NORMALIZAR PESQUISA
-================================================== */
-
-function normalizar(
-texto
-) {
-
-```
-return String(
-    texto || ""
-)
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(
-        /[\u0300-\u036f]/g,
-        ""
-    )
-    .replace(
-        /[^a-z0-9]/g,
-        ""
-    );
-```
-
-}
-
-/* ==================================================
-PESQUISA
-================================================== */
-
-if (searchInput) {
-
-```
-searchInput.addEventListener(
-    "input",
-    pesquisar
-);
-```
-
-}
-
-function pesquisar() {
-
-```
-const textoOriginal =
-    searchInput.value.trim();
-
-
-const termo =
-    normalizar(
-        textoOriginal
+    console.log(
+        "[LeoSpotter] Pesquisa:",
+        termo,
+        encontrados
     );
 
-
-/*
-   Pesquisa vazia.
-*/
-
-if (!termo) {
-
-    if (searchResult) {
-
-        searchResult.innerHTML =
-            "";
-
-    }
-
-
-    mostrarAeronaves(
-        catalogo.aeronaves
-    );
-
-    return;
-
-}
-
-
-/*
-   Procura diretamente no JSON.
-*/
-
-const encontrada =
-    catalogo.aeronaves.find(
-        aeronave =>
-            normalizar(
-                aeronave.matricula
-            ).includes(
-                termo
-            )
-    );
-
-
-/*
-   NÃO ENCONTROU
-*/
-
-if (!encontrada) {
-
-    if (searchResult) {
+    if (encontrados.length === 0) {
 
         searchResult.innerHTML = `
+            <div class="search-message">
+                Nenhuma aeronave encontrada.
+            </div>
+        `;
 
-            <div class="search-empty">
+        return;
+    }
 
+    encontrados.forEach(
+        function (aeronave) {
+
+            const item =
+                document.createElement("div");
+
+            item.className =
+                "search-result-item";
+
+            item.dataset.matricula =
+                aeronave.matricula;
+
+            item.innerHTML = `
                 <strong>
-                    Nenhuma aeronave encontrada
+                    ${escaparHTML(
+                        aeronave.matricula
+                    )}
                 </strong>
 
                 <span>
-                    Não encontramos
-                    "${textoOriginal.toUpperCase()}".
+                    ${escaparHTML(
+                        aeronave.modelo || ""
+                    )}
                 </span>
+            `;
 
-            </div>
-
-        `;
-
-    }
-
-
-    aircraftGrid.innerHTML =
-        "";
-
-    return;
-
-}
-
-
-/*
-   ENCONTROU
-*/
-
-const quantidade =
-    Array.isArray(
-        encontrada.fotos
-    )
-        ? encontrada.fotos.length
-        : 0;
-
-
-if (searchResult) {
-
-    searchResult.innerHTML = `
-
-        <div
-            class="search-result-content"
-            id="searchAircraftResult"
-        >
-
-            <div>
-
-                <span class="search-result-label">
-                    AERONAVE ENCONTRADA
-                </span>
-
-                <strong>
-                    ${encontrada.matricula}
-                </strong>
-
-                <span class="search-result-model">
-                    ${
-                        encontrada.modelo ||
-                        "Modelo não informado"
-                    }
-
-                    ·
-
-                    ${quantidade}
-
-                    ${
-                        quantidade === 1
-                            ? "fotografia"
-                            : "fotografias"
-                    }
-                </span>
-
-            </div>
-
-            <div class="search-result-arrow">
-                →
-            </div>
-
-        </div>
-
-    `;
-
-
-    const resultado =
-        document.getElementById(
-            "searchAircraftResult"
-        );
-
-
-    if (resultado) {
-
-        resultado.addEventListener(
-            "click",
-            function() {
-
-                abrirGaleria(
-                    encontrada
-                );
-
-            }
-        );
-
-    }
-
-}
-
-
-aircraftGrid.innerHTML =
-    "";
-```
-
+            searchResult.appendChild(item);
+        }
+    );
 }
 
 /* ==================================================
-ABRIR GALERIA
-================================================== */
+   ENCONTRAR AERONAVE
+   ================================================== */
 
-function abrirGaleria(
-aeronave
-) {
+function encontrarAeronave(matricula) {
 
-```
-if (!aeronave) {
+    if (!catalogo || !catalogo.aeronaves) {
+        return null;
+    }
 
-    console.error(
-        "Aeronave inválida."
-    );
+    const procurada =
+        normalizarMatricula(
+            matricula
+        );
 
-    return;
+    return catalogo.aeronaves.find(
+        function (aeronave) {
 
+            return normalizarMatricula(
+                aeronave.matricula
+            ) === procurada;
+        }
+    ) || null;
 }
 
+/* ==================================================
+   ABRIR GALERIA
+   ================================================== */
 
-if (
-    !Array.isArray(
-        aeronave.fotos
-    )
-) {
+function abrirGaleria(aeronave) {
 
-    console.error(
-        "A aeronave não possui fotos:",
+    console.log(
+        "[LeoSpotter] Abrindo galeria:",
         aeronave
     );
 
-    return;
+    if (!aeronave) {
 
-}
+        console.error(
+            "[LeoSpotter] abrirGaleria recebeu aeronave inválida."
+        );
 
+        return;
+    }
 
-/*
-   GUARDA A AERONAVE DIRETAMENTE.
-*/
+    aeronaveAtual = aeronave;
 
-currentAircraft =
-    aeronave;
+    indiceFotoAtual = 0;
 
+    fotosSelecionadas = [];
 
-currentPhotoIndex =
-    0;
+    if (galleryTitle) {
 
+        galleryTitle.textContent =
+            aeronave.matricula || "";
+    }
 
-selectedPhotos =
-    [];
+    if (galleryModel) {
 
+        galleryModel.textContent =
+            aeronave.modelo || "";
+    }
 
-/*
-   TÍTULO
-*/
+    renderizarFotos();
 
-if (galleryTitle) {
+    atualizarSelecao();
 
-    galleryTitle.textContent =
-        aeronave.matricula ||
-        "Aeronave";
+    if (!galleryModal) {
 
-}
+        console.error(
+            "[LeoSpotter] galleryModal não existe no HTML."
+        );
 
-
-if (galleryModel) {
-
-    galleryModel.textContent =
-        aeronave.modelo ||
-        "Modelo não informado";
-
-}
-
-
-/*
-   FOTOS
-*/
-
-mostrarFotos();
-
-
-atualizarSelecao();
-
-
-/*
-   ABRIR MODAL
-*/
-
-if (galleryModal) {
+        return;
+    }
 
     galleryModal.classList.add(
         "active"
     );
 
-}
+    galleryModal.style.display =
+        "block";
 
+    document.body.style.overflow =
+        "hidden";
 
-document.body.style.overflow =
-    "hidden";
-
-
-console.log(
-    "GALERIA ABERTA:",
-    aeronave.matricula
-);
-```
-
-}
-
-/* ==================================================
-FECHAR GALERIA
-================================================== */
-
-const closeGallery =
-document.getElementById(
-"closeGallery"
-);
-
-if (closeGallery) {
-
-```
-closeGallery.addEventListener(
-    "click",
-    fecharGaleria
-);
-```
-
-}
-
-function fecharGaleria() {
-
-```
-if (galleryModal) {
-
-    galleryModal.classList.remove(
-        "active"
+    console.log(
+        "[LeoSpotter] Galeria aberta."
     );
-
-}
-
-
-fecharVisualizador();
-
-
-document.body.style.overflow =
-    "";
-```
-
 }
 
 /* ==================================================
-MOSTRAR FOTOS
-================================================== */
+   RENDERIZAR FOTOS
+   ================================================== */
 
-function mostrarFotos() {
+function renderizarFotos() {
 
-```
-if (!photoGrid) {
-    return;
-}
-
-
-photoGrid.innerHTML =
-    "";
-
-
-if (
-    !currentAircraft ||
-    !Array.isArray(
-        currentAircraft.fotos
-    )
-) {
-
-    return;
-
-}
-
-
-currentAircraft.fotos.forEach(
-    (foto, index) => {
-
-        if (
-            !foto ||
-            !foto.amostra
-        ) {
-
-            return;
-
-        }
-
-
-        const card =
-            document.createElement(
-                "div"
-            );
-
-
-        card.className =
-            "photo-card";
-
-
-        if (
-            selectedPhotos.includes(
-                index
-            )
-        ) {
-
-            card.classList.add(
-                "selected"
-            );
-
-        }
-
-
-        const imagem =
-            document.createElement(
-                "img"
-            );
-
-
-        imagem.src =
-            foto.amostra;
-
-
-        imagem.alt =
-            `Fotografia ${index + 1}`;
-
-
-        imagem.loading =
-            "lazy";
-
-
-        imagem.addEventListener(
-            "click",
-            function() {
-
-                abrirVisualizador(
-                    index
-                );
-
-            }
-        );
-
-
-        const check =
-            document.createElement(
-                "div"
-            );
-
-
-        check.className =
-            "select-check";
-
-
-        check.textContent =
-            selectedPhotos.includes(
-                index
-            )
-                ? "✓"
-                : "+";
-
-
-        check.addEventListener(
-            "click",
-            function(event) {
-
-                event.preventDefault();
-
-                event.stopPropagation();
-
-                alternarSelecao(
-                    index
-                );
-
-            }
-        );
-
-
-        card.appendChild(
-            imagem
-        );
-
-        card.appendChild(
-            check
-        );
-
-
-        photoGrid.appendChild(
-            card
-        );
-
+    if (!photoGrid) {
+        return;
     }
-);
-```
 
+    photoGrid.innerHTML = "";
+
+    if (
+        !aeronaveAtual ||
+        !Array.isArray(
+            aeronaveAtual.fotos
+        )
+    ) {
+
+        photoGrid.innerHTML = `
+            <div class="search-message">
+                Nenhuma foto disponível.
+            </div>
+        `;
+
+        return;
+    }
+
+    aeronaveAtual.fotos.forEach(
+        function (foto, index) {
+
+            if (!foto.amostra) {
+                return;
+            }
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "photo-card";
+
+            card.dataset.index =
+                index;
+
+            card.innerHTML = `
+                <img
+                    src="${escaparAtributo(
+                        foto.amostra
+                    )}"
+                    alt="Foto ${
+                        escaparHTML(
+                            aeronaveAtual.matricula
+                        )
+                    }"
+                    loading="lazy"
+                >
+
+                <div class="photo-select">
+                    <input
+                        type="checkbox"
+                        data-photo-index="${index}"
+                    >
+
+                    <span>Selecionar</span>
+                </div>
+            `;
+
+            const imagem =
+                card.querySelector("img");
+
+            imagem.addEventListener(
+                "click",
+                function () {
+
+                    abrirVisualizador(index);
+                }
+            );
+
+            const checkbox =
+                card.querySelector(
+                    "input[type='checkbox']"
+                );
+
+            checkbox.addEventListener(
+                "change",
+                function (evento) {
+
+                    evento.stopPropagation();
+
+                    alternarSelecao(index);
+                }
+            );
+
+            photoGrid.appendChild(card);
+        }
+    );
 }
 
 /* ==================================================
-SELEÇÃO
-================================================== */
+   SELEÇÃO
+   ================================================== */
 
-function alternarSelecao(
-index
-) {
+function alternarSelecao(index) {
 
-```
-const posicao =
-    selectedPhotos.indexOf(
-        index
-    );
+    const posicao =
+        fotosSelecionadas.indexOf(
+            index
+        );
 
+    if (posicao >= 0) {
 
-if (
-    posicao >= 0
-) {
+        fotosSelecionadas.splice(
+            posicao,
+            1
+        );
 
-    selectedPhotos.splice(
-        posicao,
-        1
-    );
+    } else {
 
-} else {
+        fotosSelecionadas.push(index);
+    }
 
-    selectedPhotos.push(
-        index
-    );
-
-}
-
-
-mostrarFotos();
-
-atualizarSelecao();
-```
-
+    atualizarSelecao();
 }
 
 function atualizarSelecao() {
 
-```
-const quantidade =
-    selectedPhotos.length;
+    document
+        .querySelectorAll(
+            "#photoGrid input[type='checkbox']"
+        )
+        .forEach(
+            function (checkbox) {
 
+                const index =
+                    Number(
+                        checkbox.dataset.photoIndex
+                    );
 
-if (selectedCount) {
+                checkbox.checked =
+                    fotosSelecionadas.includes(
+                        index
+                    );
+            }
+        );
 
-    selectedCount.textContent =
-        quantidade;
+    const selectedCount =
+        document.getElementById(
+            "selectedCount"
+        );
 
-}
+    const selectionText =
+        document.getElementById(
+            "selectionText"
+        );
 
+    if (selectedCount) {
 
-if (selectionText) {
+        selectedCount.textContent =
+            fotosSelecionadas.length;
+    }
 
-    selectionText.textContent =
-        quantidade === 0
-            ? "Nenhuma foto selecionada"
-            : `${quantidade} ${
-                quantidade === 1
-                    ? "foto selecionada"
-                    : "fotos selecionadas"
-            }`;
+    if (selectionText) {
 
-}
+        if (fotosSelecionadas.length === 0) {
 
+            selectionText.textContent =
+                "Nenhuma foto selecionada";
 
-if (continueButton) {
+        } else {
 
-    continueButton.disabled =
-        quantidade === 0;
-
-}
-```
-
+            selectionText.textContent =
+                `${fotosSelecionadas.length} foto(s) selecionada(s)`;
+        }
+    }
 }
 
 /* ==================================================
-VISUALIZADOR
-================================================== */
+   VISUALIZADOR
+   ================================================== */
 
-function abrirVisualizador(
-index
-) {
+function abrirVisualizador(index) {
 
-```
-if (
-    !currentAircraft ||
-    !Array.isArray(
-        currentAircraft.fotos
-    )
-) {
+    if (
+        !aeronaveAtual ||
+        !Array.isArray(
+            aeronaveAtual.fotos
+        )
+    ) {
+        return;
+    }
 
-    return;
+    if (
+        !aeronaveAtual.fotos[index]
+    ) {
+        return;
+    }
 
-}
+    indiceFotoAtual = index;
 
+    const foto =
+        aeronaveAtual.fotos[index];
 
-const foto =
-    currentAircraft.fotos[
-        index
-    ];
+    if (!photoViewer || !viewerImage) {
+        return;
+    }
 
+    /*
+       IMPORTANTE:
+       O catálogo público utiliza SOMENTE
+       a imagem de amostra.
+    */
 
-if (
-    !foto ||
-    !foto.amostra
-) {
+    viewerImage.src =
+        foto.amostra;
 
-    return;
-
-}
-
-
-currentPhotoIndex =
-    index;
-
-
-viewerImage.src =
-    foto.amostra;
-
-
-if (photoViewer) {
+    viewerImage.alt =
+        aeronaveAtual.matricula || "";
 
     photoViewer.classList.add(
         "active"
     );
 
-}
-```
-
-}
-
-/* ==================================================
-FECHAR VISUALIZADOR
-================================================== */
-
-const closeViewer =
-document.getElementById(
-"closeViewer"
-);
-
-if (closeViewer) {
-
-```
-closeViewer.addEventListener(
-    "click",
-    fecharVisualizador
-);
-```
-
+    photoViewer.style.display =
+        "flex";
 }
 
 function fecharVisualizador() {
 
-```
-if (photoViewer) {
+    if (!photoViewer) {
+        return;
+    }
 
     photoViewer.classList.remove(
         "active"
     );
 
-}
-
-
-if (viewerImage) {
-
-    viewerImage.src =
+    photoViewer.style.display =
         "";
-
-}
-```
-
-}
-
-/* ==================================================
-NAVEGAÇÃO
-================================================== */
-
-const previousPhoto =
-document.getElementById(
-"previousPhoto"
-);
-
-const nextPhoto =
-document.getElementById(
-"nextPhoto"
-);
-
-if (previousPhoto) {
-
-```
-previousPhoto.addEventListener(
-    "click",
-    fotoAnterior
-);
-```
-
-}
-
-if (nextPhoto) {
-
-```
-nextPhoto.addEventListener(
-    "click",
-    proximaFoto
-);
-```
-
 }
 
 function fotoAnterior() {
 
-```
-if (
-    !currentAircraft ||
-    !currentAircraft.fotos ||
-    currentAircraft.fotos.length === 0
-) {
+    if (
+        !aeronaveAtual ||
+        !aeronaveAtual.fotos ||
+        aeronaveAtual.fotos.length === 0
+    ) {
+        return;
+    }
 
-    return;
+    indiceFotoAtual--;
 
-}
+    if (indiceFotoAtual < 0) {
 
+        indiceFotoAtual =
+            aeronaveAtual.fotos.length - 1;
+    }
 
-currentPhotoIndex--;
-
-
-if (
-    currentPhotoIndex < 0
-) {
-
-    currentPhotoIndex =
-        currentAircraft.fotos.length - 1;
-
-}
-
-
-atualizarVisualizador();
-```
-
+    abrirVisualizador(
+        indiceFotoAtual
+    );
 }
 
 function proximaFoto() {
 
-```
-if (
-    !currentAircraft ||
-    !currentAircraft.fotos ||
-    currentAircraft.fotos.length === 0
-) {
+    if (
+        !aeronaveAtual ||
+        !aeronaveAtual.fotos ||
+        aeronaveAtual.fotos.length === 0
+    ) {
+        return;
+    }
 
-    return;
+    indiceFotoAtual++;
 
-}
+    if (
+        indiceFotoAtual >=
+        aeronaveAtual.fotos.length
+    ) {
 
+        indiceFotoAtual = 0;
+    }
 
-currentPhotoIndex++;
-
-
-if (
-    currentPhotoIndex >=
-    currentAircraft.fotos.length
-) {
-
-    currentPhotoIndex =
-        0;
-
-}
-
-
-atualizarVisualizador();
-```
-
-}
-
-function atualizarVisualizador() {
-
-```
-const foto =
-    currentAircraft.fotos[
-        currentPhotoIndex
-    ];
-
-
-if (
-    foto &&
-    foto.amostra &&
-    viewerImage
-) {
-
-    viewerImage.src =
-        foto.amostra;
-
-}
-```
-
+    abrirVisualizador(
+        indiceFotoAtual
+    );
 }
 
 /* ==================================================
-PEDIDO
-================================================== */
+   FECHAR GALERIA
+   ================================================== */
 
-if (continueButton) {
+function fecharGaleria() {
 
-```
-continueButton.addEventListener(
-    "click",
-    abrirPedido
-);
-```
+    if (!galleryModal) {
+        return;
+    }
 
+    galleryModal.classList.remove(
+        "active"
+    );
+
+    galleryModal.style.display =
+        "";
+
+    document.body.style.overflow =
+        "";
 }
+
+/* ==================================================
+   PEDIDO
+   ================================================== */
 
 function abrirPedido() {
 
-```
-if (
-    !currentAircraft ||
-    !orderModal ||
-    !selectedPhotosList
-) {
+    if (
+        !orderModal ||
+        !aeronaveAtual
+    ) {
+        return;
+    }
 
-    return;
+    if (
+        fotosSelecionadas.length === 0
+    ) {
 
-}
-
-
-selectedPhotosList.innerHTML =
-    "";
-
-
-selectedPhotos.forEach(
-    index => {
-
-        const foto =
-            currentAircraft.fotos[
-                index
-            ];
-
-
-        if (
-            !foto ||
-            !foto.amostra
-        ) {
-
-            return;
-
-        }
-
-
-        const imagem =
-            document.createElement(
-                "img"
-            );
-
-
-        imagem.src =
-            foto.amostra;
-
-
-        imagem.alt =
-            `Fotografia selecionada ${index + 1}`;
-
-
-        selectedPhotosList.appendChild(
-            imagem
+        alert(
+            "Selecione pelo menos uma foto."
         );
 
+        return;
     }
-);
 
+    if (selectedPhotosList) {
 
-orderModal.classList.add(
-    "active"
-);
+        selectedPhotosList.innerHTML =
+            "";
 
+        fotosSelecionadas
+            .forEach(
+                function (index) {
 
-document.body.style.overflow =
-    "hidden";
-```
+                    const foto =
+                        aeronaveAtual.fotos[index];
 
-}
+                    if (!foto) {
+                        return;
+                    }
 
-/* ==================================================
-FECHAR PEDIDO
-================================================== */
+                    const item =
+                        document.createElement("div");
 
-const closeOrder =
-document.getElementById(
-"closeOrder"
-);
+                    item.className =
+                        "selected-photo-item";
 
-if (closeOrder) {
+                    item.textContent =
+                        `Foto ${foto.id || index + 1}`;
 
-```
-closeOrder.addEventListener(
-    "click",
-    fecharPedido
-);
-```
+                    selectedPhotosList
+                        .appendChild(item);
+                }
+            );
+    }
 
+    fecharGaleria();
+
+    orderModal.classList.add(
+        "active"
+    );
+
+    orderModal.style.display =
+        "block";
+
+    document.body.style.overflow =
+        "hidden";
 }
 
 function fecharPedido() {
 
-```
-if (orderModal) {
+    if (!orderModal) {
+        return;
+    }
 
     orderModal.classList.remove(
         "active"
     );
 
-}
-
-
-if (
-    galleryModal &&
-    galleryModal.classList.contains(
-        "active"
-    )
-) {
-
-    document.body.style.overflow =
-        "hidden";
-
-} else {
+    orderModal.style.display =
+        "";
 
     document.body.style.overflow =
         "";
-
-}
-```
-
 }
 
 /* ==================================================
-VOLTAR
-================================================== */
+   UTILITÁRIOS
+   ================================================== */
 
-const backToGallery =
-document.getElementById(
-"backToGallery"
-);
+function normalizarMatricula(valor) {
 
-if (backToGallery) {
-
-```
-backToGallery.addEventListener(
-    "click",
-    fecharPedido
-);
-```
-
-}
-
-/* ==================================================
-FINALIZAR
-================================================== */
-
-const finishButton =
-document.getElementById(
-"finishButton"
-);
-
-if (finishButton) {
-
-```
-finishButton.addEventListener(
-    "click",
-    function() {
-
-        alert(
-            "Sua seleção foi registrada nesta demonstração."
+    return String(
+        valor || ""
+    )
+        .toUpperCase()
+        .trim()
+        .replace(
+            /[\s-]/g,
+            ""
         );
+}
 
-    }
-);
-```
+function escaparHTML(valor) {
 
+    return String(
+        valor || ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+}
+
+function escaparAtributo(valor) {
+
+    return escaparHTML(valor);
 }
 
 /* ==================================================
-TECLADO
-================================================== */
+   BOTÃO CONTINUAR
+   ================================================== */
 
 document.addEventListener(
-"keydown",
-function(event) {
-
-```
-    if (
-        event.key === "Escape"
-    ) {
+    "click",
+    function (evento) {
 
         if (
-            photoViewer &&
-            photoViewer.classList.contains(
-                "active"
-            )
+            evento.target &&
+            evento.target.id ===
+            "continueButton"
         ) {
 
-            fecharVisualizador();
-
-            return;
-
+            abrirPedido();
         }
-
-
-        if (
-            orderModal &&
-            orderModal.classList.contains(
-                "active"
-            )
-        ) {
-
-            fecharPedido();
-
-            return;
-
-        }
-
-
-        if (
-            galleryModal &&
-            galleryModal.classList.contains(
-                "active"
-            )
-        ) {
-
-            fecharGaleria();
-
-            return;
-
-        }
-
     }
-
-
-    if (
-        !photoViewer ||
-        !photoViewer.classList.contains(
-            "active"
-        )
-    ) {
-
-        return;
-
-    }
-
-
-    if (
-        event.key === "ArrowLeft"
-    ) {
-
-        fotoAnterior();
-
-    }
-
-
-    if (
-        event.key === "ArrowRight"
-    ) {
-
-        proximaFoto();
-
-    }
-
-}
-```
-
 );
 
 /* ==================================================
-CLICAR FORA DO VISUALIZADOR
-================================================== */
-
-if (photoViewer) {
-
-```
-photoViewer.addEventListener(
-    "click",
-    function(event) {
-
-        if (
-            event.target ===
-            photoViewer
-        ) {
-
-            fecharVisualizador();
-
-        }
-
-    }
-);
-```
-
-}
+   FIM
+   ================================================== */
