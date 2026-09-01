@@ -1,7 +1,7 @@
 /* ==================================================
    LEOSPOTTER
    CATÁLOGO DE FOTOGRAFIAS
-   SCRIPT V1.2.4
+   SCRIPT V1.2.5
    ================================================== */
 
 "use strict";
@@ -50,14 +50,14 @@ document.addEventListener("DOMContentLoaded", iniciar);
 
 async function iniciar() {
 
-    console.log("[LeoSpotter] Inicializando V1.2.4");
+    console.log("[LeoSpotter] Inicializando V1.2.5");
 
     obterElementos();
 
     try {
 
         const resposta = await fetch(
-            "data/catalogo.json?v=1.2.4",
+            "data/catalogo.json?v=1.2.5",
             {
                 cache: "no-store"
             }
@@ -161,9 +161,9 @@ function obterElementos() {
 
     continueButton =
         document.getElementById("continueButton");
-   
-   finishButton =
-    document.getElementById("finishButton");
+
+    finishButton =
+        document.getElementById("finishButton");
 
     console.log(
         "[LeoSpotter] Elementos encontrados:",
@@ -174,7 +174,9 @@ function obterElementos() {
             galleryModal: !!galleryModal,
             photoGrid: !!photoGrid,
             photoViewer: !!photoViewer,
-            orderModal: !!orderModal
+            orderModal: !!orderModal,
+            continueButton: !!continueButton,
+            finishButton: !!finishButton
         }
     );
 }
@@ -281,6 +283,16 @@ function prepararEventos() {
         continueButton.addEventListener(
             "click",
             abrirPedido
+        );
+    }
+
+    /* FINALIZAR SELEÇÃO */
+
+    if (finishButton) {
+
+        finishButton.addEventListener(
+            "click",
+            finalizarSelecao
         );
     }
 
@@ -1182,6 +1194,21 @@ function abrirPedido() {
         );
     }
 
+    /*
+       A partir deste momento existe uma
+       seleção válida. Portanto o botão
+       FINALIZAR SELEÇÃO deve ficar habilitado.
+    */
+
+    if (finishButton) {
+
+        finishButton.disabled = false;
+
+        console.log(
+            "[LeoSpotter] Botão Finalizar Seleção: HABILITADO"
+        );
+    }
+
     fecharGaleria();
 
     orderModal.classList.add(
@@ -1193,6 +1220,43 @@ function abrirPedido() {
 
     document.body.style.overflow =
         "hidden";
+}
+
+/* ==================================================
+   FINALIZAR SELEÇÃO
+   ================================================== */
+
+function finalizarSelecao() {
+
+    if (
+        !aeronaveAtual ||
+        fotosSelecionadas.length === 0
+    ) {
+
+        alert(
+            "Selecione pelo menos uma foto."
+        );
+
+        return;
+    }
+
+    console.log(
+        "[LeoSpotter] Seleção finalizada:",
+        {
+            matricula:
+                aeronaveAtual.matricula,
+
+            fotos:
+                fotosSelecionadas
+        }
+    );
+
+    alert(
+        `Seleção finalizada!\n\n` +
+        `Aeronave: ${aeronaveAtual.matricula}\n` +
+        `Fotos selecionadas: ${fotosSelecionadas.length}\n\n` +
+        `A próxima etapa será o pagamento.`
+    );
 }
 
 function fecharPedido() {
