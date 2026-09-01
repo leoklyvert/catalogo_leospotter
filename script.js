@@ -40,6 +40,7 @@ let selectedPhotosList;
 let closeOrder;
 let backToGallery;
 let continueButton;
+let finishButton;
 
 /* ==================================================
    INICIALIZAÇÃO
@@ -160,6 +161,9 @@ function obterElementos() {
 
     continueButton =
         document.getElementById("continueButton");
+   
+   finishButton =
+    document.getElementById("finishButton");
 
     console.log(
         "[LeoSpotter] Elementos encontrados:",
