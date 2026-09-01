@@ -910,6 +910,16 @@ function atualizarSelecao() {
                     fotosSelecionadas.includes(
                         index
                     );
+
+                const card =
+                    checkbox.closest(".photo-card");
+
+                if (card) {
+                    card.classList.toggle(
+                        "selected",
+                        checkbox.checked
+                    );
+                }
             }
         );
 
@@ -923,11 +933,15 @@ function atualizarSelecao() {
             "selectionText"
         );
 
+    /* Contador */
+
     if (selectedCount) {
 
         selectedCount.textContent =
             fotosSelecionadas.length;
     }
+
+    /* Texto */
 
     if (selectionText) {
 
@@ -938,12 +952,32 @@ function atualizarSelecao() {
             selectionText.textContent =
                 "Nenhuma foto selecionada";
 
+        } else if (
+            fotosSelecionadas.length === 1
+        ) {
+
+            selectionText.textContent =
+                "1 foto selecionada";
+
         } else {
 
             selectionText.textContent =
-                `${fotosSelecionadas.length} foto(s) selecionada(s)`;
+                `${fotosSelecionadas.length} fotos selecionadas`;
         }
     }
+
+    /* Botão CONTINUAR */
+
+    if (continueButton) {
+
+        continueButton.disabled =
+            fotosSelecionadas.length === 0;
+    }
+
+    console.log(
+        "[LeoSpotter] Seleção atualizada:",
+        fotosSelecionadas
+    );
 }
 
 /* ==================================================
