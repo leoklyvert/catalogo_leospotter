@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080a0d">
+<title>LeoSpotter — Aviation Photography</title>
+<link rel="stylesheet" href="catalogo-v3.css">
+</head>
+<body>
+<header class="header">
+  <a href="#topo" class="logo">Leo<span>Spotter</span><small>AVIATION PHOTOGRAPHY</small></a>
+  <nav><a href="#buscar">Encontrar fotos</a><a href="#eventos">Eventos</a><a href="#sobre">Sobre</a></nav>
+</header>
+
+<main id="topo">
+<section class="hero" id="buscar">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="eyebrow">LEOSPOTTER · FOTOGRAFIA DE AVIAÇÃO</p>
+    <h1>Sua aeronave.<br><em>Uma imagem extraordinária.</em></h1>
+    <p class="lead">Fotografias profissionais realizadas para quem reconhece o valor de uma aeronave bem registrada.</p>
+    <div class="search-box">
+      <label for="matricula">ENCONTRE AS FOTOGRAFIAS DA SUA AERONAVE</label>
+      <div class="search-line">
+        <input id="matricula" type="text" placeholder="Digite a matrícula · ex.: PS-BZR" maxlength="10" autocomplete="off" spellcheck="false">
+        <button id="btnPesquisar" type="button">Ver fotografias <span>↗</span></button>
+      </div>
+    </div>
+  </div>
+  <div class="hero-footer"><span>LEONARDO MOREIRA</span><span>BRASIL</span><span>2026</span></div>
+</section>
+
+<section class="intro" id="sobre">
+  <span class="number">01</span>
+  <div><p class="eyebrow">A EXPERIÊNCIA</p><h2>Não é apenas um registro.<br><em>É a sua aeronave.</em></h2></div>
+  <p>Um catálogo criado para apresentar cada fotografia com a importância que ela merece — e para tornar a escolha simples, elegante e segura.</p>
+</section>
+
+<section class="catalog hidden" id="resultado">
+  <div class="result-title">
+    <div><p class="eyebrow">ACERVO DA AERONAVE</p><h2 id="resultadoMatricula">—</h2><p id="resultadoModelo">Fotografias disponíveis</p></div>
+    <span class="available">● ACERVO DISPONÍVEL</span>
+  </div>
+
+  <div class="aircraft-summary">
+    <div class="visual-placeholder"><span>LEOSPOTTER</span><strong>✈</strong></div>
+    <div class="summary-copy">
+      <p class="eyebrow">COLEÇÃO</p>
+      <h3 id="tituloColecao">Fotografias da aeronave</h3>
+      <p class="summary-text">Selecione suas fotografias favoritas. As imagens exibidas nesta etapa são amostras de visualização.</p>
+      <div class="photo-count"><b id="contadorFotos">0</b><span>fotografias disponíveis</span></div>
+    </div>
+  </div>
+
+  <div class="collection" id="acervo">
+    <div class="collection-header"><div><p class="eyebrow">ACERVO EXCLUSIVO</p><h3>Escolha suas fotografias</h3></div><span id="contadorSelecao">0 selecionadas</span></div>
+    <div id="semFotos" class="empty"><strong>Este acervo ainda não possui fotografias.</strong><p>As imagens aparecerão aqui quando a coleção for publicada.</p></div>
+    <div id="galeria" class="gallery"></div>
+  </div>
+</section>
+
+<section id="naoEncontrada" class="not-found hidden"><p class="eyebrow">NENHUM RESULTADO</p><h3>Não encontramos fotografias para <b id="matriculaNaoEncontrada"></b>.</h3><p>Confira a matrícula e tente novamente.</p></section>
+
+<section class="events" id="eventos">
+  <div><p class="eyebrow">EVENTOS</p><h2>Momentos que<br><em>merecem ser lembrados.</em></h2></div>
+  <p>Cada evento terá sua própria coleção, reunindo as aeronaves fotografadas e permitindo que o cliente encontre seu acervo de maneira rápida e elegante.</p>
+  <article class="event-card"><span>COLEÇÃO</span><strong>CASSILÂNDIA 2026</strong><small>Fotografias do evento</small></article>
+</section>
+
+<section class="selection hidden" id="selecao">
+  <div><p class="eyebrow">SUA SELEÇÃO</p><h2>Suas fotografias favoritas.</h2></div>
+  <div class="selection-summary"><span id="resumoQuantidade">0 fotografias</span><strong id="resumoTotal">R$ 0,00</strong><button type="button" id="btnCheckout">Continuar para pagamento</button></div>
+</section>
+</main>
+
+<footer><div class="logo">Leo<span>Spotter</span></div><p>Fotografia de aviação por Leonardo Moreira.</p><small>© 2026 LeoSpotter</small></footer>
+<script src="script.js"></script>
+</body>
+</html>
