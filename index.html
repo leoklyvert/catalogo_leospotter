@@ -1,490 +1,394 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <meta name="theme-color" content="#080a0d">
     <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
+        name="description"
+        content="LeoSpotter Aviation Photography — encontre e selecione as fotografias da sua aeronave."
     >
 
-    <title>LeoSpotter — Catálogo de Fotografias</title>
+    <title>LeoSpotter | Aviation Photography</title>
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
-
+    <link rel="stylesheet" href="style.css">
 </head>
-
 
 <body>
 
-
-    <!-- ==================================================
-         CABEÇALHO
-    =================================================== -->
-
+    <!-- =========================================================
+         HEADER
+    ========================================================== -->
     <header class="site-header">
+        <div class="container header-inner">
 
-        <div class="header-container">
-
-            <a
-                href="#"
-                class="brand"
-                aria-label="LeoSpotter"
-            >
-
-                <img
-                    src="assets/logo.jpg"
-                    alt="LeoSpotter"
-                    class="logo"
-                >
-
+            <a href="#" class="brand" aria-label="LeoSpotter">
+                <span class="brand-name">LEOSPOTTER</span>
+                <span class="brand-subtitle">AVIATION PHOTOGRAPHY</span>
             </a>
 
-
-            <div class="header-title">
-
-                <span>
-                    CATÁLOGO DE FOTOGRAFIAS
+            <div class="header-event">
+                <span class="header-event-label">CATÁLOGO</span>
+                <span class="header-event-name">
+                    Fotografias de aviação
                 </span>
-
             </div>
 
         </div>
-
     </header>
 
 
-    <!-- ==================================================
-         CONTEÚDO PRINCIPAL
-    =================================================== -->
-
     <main>
 
-
-        <!-- ==================================================
-             HERO / PESQUISA
-        =================================================== -->
-
+        <!-- =====================================================
+             HERO
+        ====================================================== -->
         <section class="hero">
 
-            <div class="hero-container">
+            <div class="container hero-content">
 
-                <span class="hero-kicker">
-                    FOTOGRAFIA DE AVIAÇÃO
-                </span>
+                <div class="hero-copy">
 
-
-                <h1>
-                    Encontre as fotos<br>
-                    da sua aeronave.
-                </h1>
-
-
-                <p class="hero-description">
-                    Pesquise pela matrícula e confira
-                    as fotografias registradas no evento.
-                </p>
-
-
-                <!-- PESQUISA -->
-
-                <div class="search-box">
-
-                    <span class="search-icon">
-                        ⌕
+                    <span class="eyebrow">
+                        LEOSPOTTER · AVIATION PHOTOGRAPHY
                     </span>
 
+                    <h1>
+                        Sua aeronave.<br>
+                        <em>Uma imagem extraordinária.</em>
+                    </h1>
 
-                    <input
-                        type="text"
-                        id="searchInput"
-                        placeholder="Digite a matrícula da aeronave"
-                        autocomplete="off"
-                        spellcheck="false"
-                    >
+                    <p>
+                        Encontre as fotografias feitas durante o evento,
+                        escolha suas favoritas e transforme cada registro
+                        em uma lembrança da sua aeronave.
+                    </p>
 
                 </div>
 
 
-                <div
-                    id="searchResult"
-                    class="search-result"
-                ></div>
+                <!-- =================================================
+                     BUSCA POR MATRÍCULA
+                ================================================== -->
+                <div class="search-card">
+
+                    <label for="matricula">
+                        ENCONTRE SUA AERONAVE
+                    </label>
+
+                    <div class="search-row">
+
+                        <input
+                            type="text"
+                            id="matricula"
+                            name="matricula"
+                            placeholder="Digite a matrícula"
+                            autocomplete="off"
+                            autocapitalize="characters"
+                            spellcheck="false"
+                            aria-label="Matrícula da aeronave"
+                        >
+
+                        <button
+                            type="button"
+                            id="btnPesquisar"
+                        >
+                            VER FOTOGRAFIAS
+                        </button>
+
+                    </div>
+
+                    <p class="search-hint">
+                        Ex.: PS-BZR
+                    </p>
+
+                </div>
 
             </div>
 
         </section>
 
 
+        <!-- =====================================================
+             RESULTADO / GALERIA
+        ====================================================== -->
+        <section
+            class="catalog-section"
+            id="resultado"
+            hidden
+        >
 
-        <!-- ==================================================
-             EVENTO
-        =================================================== -->
+            <div class="container">
 
-        <section class="event-section">
-
-            <div class="event-container">
-
-
-                <div class="event-heading">
+                <!-- Cabeçalho da coleção -->
+                <div class="catalog-heading">
 
                     <div>
 
-                        <span class="section-kicker">
-                            CONFIRA O ÚLTIMO EVENTO
+                        <span class="eyebrow">
+                            COLEÇÃO FOTOGRÁFICA
                         </span>
 
-
-                        <h2>
-                            Cassilândia 2026
+                        <h2 id="resultadoMatricula">
+                            ---
                         </h2>
 
-
-                        <p>
-                            Cassilândia - MS · 2026
+                        <p id="resultadoModelo">
+                            Fotografias da aeronave
                         </p>
 
                     </div>
 
 
-                    <div class="event-summary">
+                    <div class="photo-count">
 
-                        <div class="summary-item">
+                        <strong id="contadorFotos">
+                            0
+                        </strong>
 
-                            <strong
-                                id="aircraftCount"
-                            >
-                                0
-                            </strong>
-
-                            <span>
-                                AERONAVES
-                            </span>
-
-                        </div>
-
-
-                        <div class="summary-item">
-
-                            <strong
-                                id="photoCount"
-                            >
-                                0
-                            </strong>
-
-                            <span>
-                                FOTOGRAFIAS
-                            </span>
-
-                        </div>
+                        <span>
+                            fotografias
+                        </span>
 
                     </div>
 
                 </div>
 
 
-
-                <!-- ==================================================
-                     LISTA DE AERONAVES
-                =================================================== -->
-
+                <!-- =================================================
+                     GALERIA
+                ================================================== -->
                 <div
-                    id="aircraftGrid"
-                    class="aircraft-grid"
+                    id="galeria"
+                    class="photo-grid"
+                    aria-live="polite"
                 ></div>
 
+
+                <!-- =================================================
+                     SEM FOTOS
+                ================================================== -->
+                <div
+                    id="semFotos"
+                    class="empty-state"
+                    hidden
+                >
+
+                    <span class="empty-icon">
+                        —
+                    </span>
+
+                    <h3>
+                        Nenhuma fotografia encontrada
+                    </h3>
+
+                    <p>
+                        Não encontramos fotografias disponíveis
+                        para esta matrícula.
+                    </p>
+
+                </div>
+
+
+                <!-- =================================================
+                     MATRÍCULA NÃO ENCONTRADA
+                ================================================== -->
+                <div
+                    id="naoEncontrada"
+                    class="empty-state"
+                    hidden
+                >
+
+                    <span class="empty-icon">
+                        ?
+                    </span>
+
+                    <h3>
+                        Não encontramos esta matrícula
+                    </h3>
+
+                    <p>
+                        Verifique a matrícula digitada e tente novamente.
+                    </p>
+
+                    <p
+                        class="not-found-registration"
+                        id="matriculaNaoEncontrada"
+                    ></p>
+
+                </div>
 
             </div>
 
         </section>
 
 
-    </main>
+        <!-- =====================================================
+             EVENTO
+        ====================================================== -->
+        <section class="event-section">
+
+            <div class="container">
+
+                <div class="event-layout">
+
+                    <div class="event-copy">
+
+                        <span class="eyebrow">
+                            REGISTRO FOTOGRÁFICO
+                        </span>
+
+                        <h2>
+                            Cada evento.<br>
+                            <em>Uma coleção única.</em>
+                        </h2>
+
+                        <p>
+                            As fotografias são organizadas por evento
+                            e matrícula, permitindo que você encontre
+                            rapidamente os registros feitos da sua aeronave.
+                        </p>
+
+                    </div>
 
 
+                    <div class="event-card">
 
-    <!-- ==================================================
-         MODAL DA GALERIA
-    =================================================== -->
+                        <span class="event-card-label">
+                            EVENTO
+                        </span>
 
-    <div
-        id="galleryModal"
-        class="modal"
-    >
+                        <h3>
+                            Cassilândia 2026
+                        </h3>
 
-        <div class="modal-content gallery-modal-content">
+                        <p>
+                            Fotografia de aviação<br>
+                            LeoSpotter
+                        </p>
 
-
-            <div class="modal-header">
-
-                <div>
-
-                    <span class="modal-kicker">
-                        FOTOGRAFIAS DA AERONAVE
-                    </span>
-
-
-                    <h2
-                        id="galleryTitle"
-                    >
-                        PP-XXX
-                    </h2>
-
-
-                    <p
-                        id="galleryModel"
-                    >
-                        Aeronave de demonstração
-                    </p>
+                    </div>
 
                 </div>
 
-
-                <button
-                    id="closeGallery"
-                    class="modal-close"
-                    type="button"
-                    aria-label="Fechar"
-                >
-                    ×
-                </button>
-
             </div>
 
+        </section>
 
 
-            <!-- ==================================================
-                 FOTOS
-            =================================================== -->
+        <!-- =====================================================
+             SELEÇÃO / CARRINHO
+        ====================================================== -->
+        <aside
+            id="selecao"
+            class="selection-bar"
+            aria-label="Fotos selecionadas"
+            hidden
+        >
 
-            <div
-                id="photoGrid"
-                class="photo-grid"
-            ></div>
-
-
-
-            <!-- ==================================================
-                 BARRA DE SELEÇÃO
-            =================================================== -->
-
-            <div class="selection-bar">
+            <div class="container selection-inner">
 
                 <div class="selection-info">
 
-                    <strong
-                        id="selectedCount"
-                    >
-                        0
-                    </strong>
-
-
-                    <span
-                        id="selectionText"
-                    >
-                        Nenhuma foto selecionada
-                    </span>
-
-                </div>
-
-
-                <button
-                    id="continueButton"
-                    class="primary-button"
-                    type="button"
-                    disabled
-                >
-                    CONTINUAR →
-                </button>
-
-            </div>
-
-
-        </div>
-
-    </div>
-
-
-
-    <!-- ==================================================
-         VISUALIZADOR DE FOTO
-    =================================================== -->
-
-    <div
-        id="photoViewer"
-        class="viewer"
-    >
-
-        <button
-            id="closeViewer"
-            class="viewer-close"
-            type="button"
-            aria-label="Fechar"
-        >
-            ×
-        </button>
-
-
-        <button
-            id="previousPhoto"
-            class="viewer-navigation viewer-previous"
-            type="button"
-            aria-label="Foto anterior"
-        >
-            ‹
-        </button>
-
-
-        <img
-            id="viewerImage"
-            src=""
-            alt="Fotografia"
-        >
-
-
-        <button
-            id="nextPhoto"
-            class="viewer-navigation viewer-next"
-            type="button"
-            aria-label="Próxima foto"
-        >
-            ›
-        </button>
-
-    </div>
-
-
-
-    <!-- ==================================================
-         MODAL DO PEDIDO
-    =================================================== -->
-
-    <div
-        id="orderModal"
-        class="modal"
-    >
-
-        <div class="modal-content order-modal-content">
-
-
-            <div class="modal-header">
-
-                <div>
-
-                    <span class="modal-kicker">
+                    <span class="selection-label">
                         SUA SELEÇÃO
                     </span>
 
+                    <strong>
 
-                    <h2>
-                        Revise suas fotos
-                    </h2>
+                        <span id="contadorSelecao">
+                            0
+                        </span>
+
+                        <span>
+                            fotos selecionadas
+                        </span>
+
+                    </strong>
+
+                </div>
 
 
-                    <p>
-                        Confira as fotografias selecionadas
-                        antes de continuar.
-                    </p>
+                <div class="selection-total">
+
+                    <span>
+                        TOTAL
+                    </span>
+
+                    <strong id="resumoTotal">
+                        R$ 0,00
+                    </strong>
 
                 </div>
 
 
                 <button
-                    id="closeOrder"
-                    class="modal-close"
                     type="button"
-                    aria-label="Fechar"
+                    id="btnCheckout"
+                    class="checkout-button"
                 >
-                    ×
+                    CONTINUAR
                 </button>
 
             </div>
 
+        </aside>
+
+    </main>
 
 
-            <!-- FOTOS SELECIONADAS -->
-
-            <div
-                id="selectedPhotosList"
-                class="selected-photos-list"
-            ></div>
-
-
-
-            <!-- AÇÕES -->
-
-            <div class="order-actions">
-
-                <button
-                    id="backToGallery"
-                    class="secondary-button"
-                    type="button"
-                >
-                    ← VOLTAR
-                </button>
-
-
-                <button
-                    id="finishButton"
-                    class="primary-button"
-                    type="button"
-                >
-                    FINALIZAR SELEÇÃO →
-                </button>
-
-            </div>
-
-
-        </div>
-
-    </div>
-
-
-
-    <!-- ==================================================
-         RODAPÉ
-    =================================================== -->
-
+    <!-- =========================================================
+         FOOTER
+    ========================================================== -->
     <footer class="site-footer">
 
-        <div class="footer-container">
+        <div class="container footer-inner">
 
-            <img
-                src="assets/logo.jpg"
-                alt="LeoSpotter"
-                class="footer-logo"
-            >
+            <div class="footer-brand">
+
+                <span class="brand-name">
+                    LEOSPOTTER
+                </span>
+
+                <span class="brand-subtitle">
+                    AVIATION PHOTOGRAPHY
+                </span>
+
+            </div>
 
 
-            <p>
-                Desenvolvido por Leonardo Moreira
-            </p>
+            <div class="footer-copy">
+
+                <p>
+                    Fotografia de aviação por Leonardo Moreira.
+                </p>
+
+                <p>
+                    Desenvolvido por Leonardo Moreira
+                </p>
+
+            </div>
 
 
-            <a
-                href="mailto:leospotteruberaba@gmail.com"
-            >
-                leospotteruberaba@gmail.com
-            </a>
+            <div class="footer-contact">
+
+                <a href="mailto:leospotteruberaba@gmail.com">
+                    leospotteruberaba@gmail.com
+                </a>
+
+            </div>
 
         </div>
 
     </footer>
 
 
-
-    <!-- ==================================================
+    <!-- =========================================================
          JAVASCRIPT
-    =================================================== -->
-
-    <script src="script.js?v=1.2.5"></script>
-
+         Toda a lógica do catálogo permanece no script.js.
+    ========================================================== -->
+    <script src="script.js"></script>
 
 </body>
-
 </html>
