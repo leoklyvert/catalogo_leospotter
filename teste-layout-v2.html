@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07090c">
+<meta name="description" content="LeoSpotter — fotografia e consulta de aeronaves.">
+<title>LeoSpotter — Aviation Photography</title>
+<link rel="stylesheet" href="teste-layout-v2.css">
+</head>
+<body id="inicio">
+
+<header class="lux-header">
+  <div class="lux-nav">
+    <a href="#inicio" class="lux-brand" aria-label="LeoSpotter">
+      <span class="brand-word">Leo<span>Spotter</span></span>
+      <span class="brand-sub">AVIATION PHOTOGRAPHY</span>
+    </a>
+    <nav>
+      <a href="#buscar">Aeronave</a>
+      <a href="#resultado">Fotografias</a>
+      <a href="#aerodromos">Aeródromos</a>
+      <a href="#estatisticas">Acervo</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="lux-hero" id="buscar">
+    <div class="hero-image-shape"></div>
+    <div class="hero-noise"></div>
+    <div class="hero-content">
+      <div class="hero-kicker">LEOSPOTTER · PROFESSIONAL AVIATION PHOTOGRAPHY</div>
+      <h1>Sua aeronave.<br><i>Uma imagem extraordinária.</i></h1>
+      <p class="hero-lead">Fotografias cuidadosamente registradas para transformar cada aeronave em uma memória que merece ser preservada.</p>
+
+      <div class="premium-search">
+        <div class="search-overline">ENCONTRE AS FOTOGRAFIAS DA SUA AERONAVE</div>
+        <div class="search-row">
+          <input id="matricula" type="text" placeholder="Digite a matrícula · ex.: PS-BZR" maxlength="10" autocomplete="off" spellcheck="false" list="listaAeronaves" aria-label="Matrícula da aeronave">
+          <button id="btnPesquisar" type="button">Encontrar fotografias <span>↗</span></button>
+        </div>
+        <datalist id="listaAeronaves"><option value="PS-BZR">Beech F33A</option></datalist>
+      </div>
+
+      <a href="#aerodromos" class="quiet-link">Consultar um aeródromo <span>→</span></a>
+    </div>
+
+    <div class="hero-side-note">
+      <span>01</span>
+      <span>AVIATION<br>MEMORIES</span>
+    </div>
+
+    <div class="hero-bottomline">
+      <span>LEONARDO MOREIRA</span>
+      <span>BRASIL</span>
+      <span>LEOSPOTTER</span>
+    </div>
+  </section>
+
+  <section class="statement">
+    <div class="statement-number">01</div>
+    <div>
+      <span class="section-kicker">A FOTOGRAFIA</span>
+      <h2>Não é apenas um registro.<br><em>É a sua aeronave.</em></h2>
+    </div>
+    <p>Cada fotografia é apresentada para valorizar a aeronave, seus detalhes e o momento em que ela foi registrada. O catálogo foi pensado para quem espera mais de uma simples imagem.</p>
+  </section>
+
+  <section class="aircraft-showcase hidden" id="resultado">
+    <div class="showcase-head">
+      <div>
+        <span class="section-kicker">AERONAVE ENCONTRADA</span>
+        <h2 id="resultadoMatricula">—</h2>
+        <p id="resultadoModelo">—</p>
+      </div>
+      <span class="availability">● DISPONÍVEL NO ACERVO</span>
+    </div>
+
+    <div class="aircraft-intro">
+      <div class="aircraft-visual-placeholder">
+        <div class="visual-grid"></div>
+        <div class="plane-outline">✈</div>
+        <span>PHOTOGRAPHY ARCHIVE</span>
+      </div>
+      <div class="aircraft-copy">
+        <span class="section-kicker">IDENTIFICAÇÃO</span>
+        <div class="identity-line"><strong id="fabricante">—</strong><span id="modelo">—</span></div>
+        <div class="technical-grid">
+          <div><span>Nº DE SÉRIE</span><strong id="numeroSerie">—</strong></div>
+          <div><span>ANO</span><strong id="ano">—</strong></div>
+          <div><span>TIPO ICAO</span><strong id="tipoIcao">—</strong></div>
+          <div><span>SITUAÇÃO</span><strong id="situacao">—</strong></div>
+        </div>
+        <p class="premium-copy">Esta página reúne as fotografias disponíveis desta aeronave no acervo LeoSpotter.</p>
+      </div>
+    </div>
+
+    <div class="photo-collection" id="acervo">
+      <div class="collection-heading">
+        <div><span class="section-kicker">ACERVO EXCLUSIVO</span><h3>Fotografias da aeronave</h3></div>
+        <span id="contadorFotos">0 fotos</span>
+      </div>
+      <div id="semFotos" class="empty-premium">
+        <div class="empty-mark">LS</div>
+        <div><strong>Ainda não há fotografias disponíveis.</strong><p>Esta área será preenchida automaticamente quando houver imagens cadastradas para a matrícula.</p></div>
+        <button id="btnAdicionarFoto" type="button">+ Adicionar fotografia</button>
+      </div>
+      <div id="formularioFoto" class="photo-form hidden">
+        <h4>Adicionar fotografia</h4>
+        <div class="form-grid">
+          <label>Fotografia<input id="foto" type="file" accept="image/jpeg,image/png,image/webp"></label>
+          <label>Data da foto<input id="dataFoto" type="date"></label>
+          <label>Aeródromo (ICAO)<input id="localFoto" type="text" maxlength="4" placeholder="SBUR"></label>
+          <label>Observação<textarea id="observacaoFoto" rows="3" placeholder="Observação sobre a fotografia"></textarea></label>
+        </div>
+        <div id="previewFoto" class="preview-foto hidden"><img id="imagemPreview" src="" alt="Pré-visualização"></div>
+        <div class="form-actions"><button id="btnCancelarFoto" class="btn-cancel" type="button">Cancelar</button><button id="btnSalvarFoto" class="btn-save" type="button">Salvar</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="naoEncontrada" class="not-found hidden">
+    <span class="section-kicker">CONSULTA</span>
+    <strong>Aeronave não encontrada</strong>
+    <p>Não encontramos a matrícula <b id="matriculaNaoEncontrada"></b> na base.</p>
+  </section>
+
+  <section class="airport-section" id="aerodromos">
+    <div class="section-heading-wide">
+      <div><span class="section-kicker">NAVEGAÇÃO AÉREA</span><h2>Quando o ponto de partida<br><em>também importa.</em></h2></div>
+      <p>Consulte aeródromos, pistas, frequências, operação e distâncias declaradas.</p>
+    </div>
+    <div class="airport-search-premium">
+      <div><label for="icao">CÓDIGO ICAO</label><input id="icao" type="text" placeholder="SBUR" maxlength="4" autocomplete="off" spellcheck="false" list="listaAerodromos"></div>
+      <datalist id="listaAerodromos"><option value="SBUR">Uberaba</option></datalist>
+      <button id="btnPesquisarIcao" type="button">Consultar aeródromo <span>↗</span></button>
+    </div>
+    <div class="small-hint">Exemplo: SBUR · pressione Enter para consultar</div>
+
+    <section id="resultadoAerodromo" class="airport-result hidden">
+      <div class="airport-title"><div><span class="section-kicker">AERÓDROMO ENCONTRADO</span><h3 id="resultadoIcao">—</h3><p id="resultadoNomeAerodromo">—</p></div><span class="availability">● CONFIRMADO</span></div>
+      <div class="airport-data-grid">
+        <div><span>ICAO</span><strong id="aerodromoIcao">—</strong></div><div><span>CIDADE</span><strong id="aerodromoCidade">—</strong></div><div><span>UF</span><strong id="aerodromoUf">—</strong></div><div><span>ELEVAÇÃO</span><strong id="aerodromoElevacao">—</strong></div><div><span>OPERAÇÃO DIURNA</span><strong id="aerodromoOperacaoDiurna">—</strong></div><div><span>OPERAÇÃO NOTURNA</span><strong id="aerodromoOperacaoNoturna">—</strong></div>
+      </div>
+      <div class="airport-detail-grid"><div><h4>Pistas</h4><div id="listaPistas"><p class="dados-indisponiveis">Nenhuma pista encontrada.</p></div></div><div><h4>Distâncias declaradas</h4><div id="listaDistancias"><p class="dados-indisponiveis">Nenhuma distância declarada encontrada.</p></div></div><div><h4>Frequências</h4><div id="listaFrequencias"><p class="dados-indisponiveis">Nenhuma frequência encontrada.</p></div></div></div>
+    </section>
+    <section id="aerodromoNaoEncontrado" class="not-found hidden"><span class="section-kicker">CONSULTA</span><strong>Aeródromo não encontrado</strong><p>Não encontramos o código ICAO <b id="icaoNaoEncontrado"></b> na base.</p></section>
+  </section>
+
+  <section class="numbers" id="estatisticas">
+    <div class="numbers-intro"><span class="section-kicker">O ACERVO</span><h2>Fotografias feitas<br><em>para permanecer.</em></h2></div>
+    <div class="number"><strong id="totalAeronaves">0</strong><span>Aeronaves fotografadas</span></div>
+    <div class="number"><strong id="totalFotos">0</strong><span>Fotografias no acervo</span></div>
+    <div class="number"><strong>RAB</strong><span>Base de aeronaves</span></div>
+  </section>
+</main>
+
+<footer class="lux-footer">
+  <div><span class="footer-brand">LeoSpotter</span><p>Aviação, fotografia e memória.</p></div>
+  <div class="footer-links"><a href="https://www.instagram.com/leospotteruberaba/" target="_blank" rel="noopener">Instagram</a><a href="https://www.jetphotos.com/photographer/179976" target="_blank" rel="noopener">JetPhotos</a><a href="https://www.planespotters.net/photos/gallery/leoklyvert" target="_blank" rel="noopener">PlaneSpotters</a><a href="mailto:leospotteruberaba@gmail.com">E-mail</a></div>
+  <div class="footer-end">Desenvolvido por Leonardo Moreira<br><span id="versaoSite">v1.5.0</span></div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase/config.js"></script>
+<script src="supabase/fotos.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
