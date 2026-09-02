@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#07111f">
+<meta name="description" content="LeoSpotter — consulta de aeronaves e aeródromos para spotters.">
+<title>LeoSpotter — Novo Layout</title>
+<link rel="stylesheet" href="teste-layout.css">
+</head>
+<body id="inicio">
+
+<header class="site-header">
+  <div class="nav-wrap">
+    <a class="brand" href="#inicio" aria-label="LeoSpotter">
+      <span class="brand-mark">LS</span>
+      <span class="brand-copy"><strong>LeoSpotter</strong><small>AVIAÇÃO • FOTOGRAFIA • DADOS</small></span>
+    </a>
+    <nav class="nav-links">
+      <a href="#busca">Consultar</a>
+      <a href="#acervo">Acervo</a>
+      <a href="#estatisticas">Estatísticas</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="busca">
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <div class="eyebrow">MANUAL DE CONSULTA PARA SPOTTERS</div>
+        <h1>Encontre uma aeronave.<br><em>Conheça a história.</em></h1>
+        <p>Consulte matrículas, modelos, dados de registro, aeródromos e informações operacionais em um único lugar.</p>
+
+        <div class="search-panel">
+          <div class="search-label">PESQUISAR AERONAVE</div>
+          <div class="main-search">
+            <span class="search-icon">⌕</span>
+            <input id="matricula" type="text" placeholder="Digite a matrícula — ex.: PS-BZR" maxlength="10" autocomplete="off" spellcheck="false" list="listaAeronaves">
+            <button id="btnPesquisar" type="button">Consultar <span>→</span></button>
+          </div>
+          <datalist id="listaAeronaves"><option value="PS-BZR">Beech F33A</option></datalist>
+          <div class="search-hint">Pressione Enter ou use o botão para consultar.</div>
+        </div>
+
+        <a class="secondary-search" href="#aerodromos"><span>⌖</span> Consultar um aeródromo por código ICAO</a>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="radar-ring ring-1"></div><div class="radar-ring ring-2"></div><div class="radar-ring ring-3"></div>
+        <div class="flight-line line-1"></div><div class="flight-line line-2"></div>
+        <div class="plane-symbol">✈</div>
+        <div class="visual-card"><span>LEOSPOTTER</span><strong>SPOT. RECORD. REMEMBER.</strong></div>
+      </div>
+    </div>
+    <div class="hero-bottom"><span>LEONARDO MOREIRA</span><span>UBERABA • MG • BRASIL</span><span>V 1.5.0</span></div>
+  </section>
+
+  <section class="quick-stats" id="estatisticas">
+    <div><span class="stat-number" id="totalAeronaves">0</span><span class="stat-label">Aeronaves fotografadas</span></div>
+    <div><span class="stat-number" id="totalFotos">0</span><span class="stat-label">Fotografias no acervo</span></div>
+    <div><span class="stat-number">RAB</span><span class="stat-label">Base de aeronaves</span></div>
+    <div><span class="stat-number">AIS</span><span class="stat-label">Dados de aeródromos</span></div>
+  </section>
+
+  <section class="content-section" id="aerodromos">
+    <div class="section-heading"><div><span class="eyebrow">NAVEGAÇÃO AÉREA</span><h2>Aeródromos</h2></div><p>Informações de pistas, frequências, operação e distâncias declaradas.</p></div>
+    <div class="airport-search">
+      <div><label for="icao">CÓDIGO ICAO</label><input id="icao" type="text" placeholder="Ex.: SBUR" maxlength="4" autocomplete="off" spellcheck="false" list="listaAerodromos"><datalist id="listaAerodromos"><option value="SBUR">Uberaba</option></datalist></div>
+      <button id="btnPesquisarIcao" type="button">Pesquisar aeródromo <span>→</span></button>
+    </div>
+    <div class="hint">Digite os quatro caracteres do código ICAO.</div>
+
+    <section id="resultadoAerodromo" class="result-block hidden">
+      <div class="result-title"><div><span class="eyebrow">AERÓDROMO ENCONTRADO</span><h3 id="resultadoIcao">—</h3><p id="resultadoNomeAerodromo">—</p></div><span class="status">● Encontrado</span></div>
+      <div class="data-grid airport-data"><div><span>ICAO</span><strong id="aerodromoIcao">—</strong></div><div><span>Cidade</span><strong id="aerodromoCidade">—</strong></div><div><span>UF</span><strong id="aerodromoUf">—</strong></div><div><span>Elevação</span><strong id="aerodromoElevacao">—</strong></div><div><span>Operação diurna</span><strong id="aerodromoOperacaoDiurna">—</strong></div><div><span>Operação noturna</span><strong id="aerodromoOperacaoNoturna">—</strong></div></div>
+      <div class="subgrid"><div><h4>Pistas</h4><div id="listaPistas"><p class="dados-indisponiveis">Nenhuma pista encontrada.</p></div></div><div><h4>Distâncias declaradas</h4><div id="listaDistancias"><p class="dados-indisponiveis">Nenhuma distância declarada encontrada.</p></div></div><div><h4>Frequências</h4><div id="listaFrequencias"><p class="dados-indisponiveis">Nenhuma frequência encontrada.</p></div></div></div>
+    </section>
+    <section id="aerodromoNaoEncontrado" class="not-found hidden"><strong>Aeródromo não encontrado</strong><p>Não encontramos o código ICAO <b id="icaoNaoEncontrado"></b> na base.</p></section>
+  </section>
+
+  <section class="aircraft-result-area">
+    <section id="resultado" class="result-block aircraft-result hidden">
+      <div class="result-title"><div><span class="eyebrow">AERONAVE ENCONTRADA</span><h3 id="resultadoMatricula">—</h3><p id="resultadoModelo">—</p></div><span class="status">● Encontrada</span></div>
+      <div class="data-grid"><div><span>Fabricante</span><strong id="fabricante">—</strong></div><div><span>Modelo</span><strong id="modelo">—</strong></div><div><span>Nº de série</span><strong id="numeroSerie">—</strong></div><div><span>Ano de fabricação</span><strong id="ano">—</strong></div><div><span>Tipo ICAO</span><strong id="tipoIcao">—</strong></div><div><span>Situação</span><strong id="situacao">—</strong></div></div>
+      <div class="collection" id="acervo"><div class="collection-head"><div><span class="eyebrow">MEU ACERVO</span><h4>Minhas fotografias</h4></div><span id="contadorFotos" class="photo-count">0 fotos</span></div>
+        <div id="semFotos" class="empty-collection"><div class="camera-icon">◎</div><div><strong>Nenhuma fotografia cadastrada</strong><p>Adicione fotografias desta aeronave ao seu acervo.</p></div><button id="btnAdicionarFoto" type="button">+ Adicionar fotografia</button></div>
+        <div id="formularioFoto" class="photo-form hidden"><h4>Adicionar fotografia</h4><div class="form-grid"><label>Fotografia<input id="foto" type="file" accept="image/jpeg,image/png,image/webp"></label><label>Data da foto<input id="dataFoto" type="date"></label><label>Aeródromo (ICAO)<input id="localFoto" type="text" maxlength="4" placeholder="SBUR"></label><label>Observação<textarea id="observacaoFoto" rows="3" placeholder="Observação sobre a fotografia"></textarea></label></div><div id="previewFoto" class="preview-foto hidden"><img id="imagemPreview" src="" alt="Pré-visualização"></div><div class="form-actions"><button id="btnCancelarFoto" class="btn-cancel" type="button">Cancelar</button><button id="btnSalvarFoto" class="btn-save" type="button">Salvar</button></div></div>
+      </div>
+    </section>
+    <section id="naoEncontrada" class="not-found hidden"><strong>Aeronave não encontrada</strong><p>Não encontramos a matrícula <b id="matriculaNaoEncontrada"></b> na base.</p></section>
+  </section>
+</main>
+
+<footer><div><strong>LeoSpotter</strong><p>Aviação, fotografia e memória.</p></div><div class="footer-links"><a href="https://www.instagram.com/leospotteruberaba/" target="_blank" rel="noopener">Instagram</a><a href="https://www.jetphotos.com/photographer/179976" target="_blank" rel="noopener">JetPhotos</a><a href="https://www.planespotters.net/photos/gallery/leoklyvert" target="_blank" rel="noopener">PlaneSpotters</a><a href="mailto:leospotteruberaba@gmail.com">E-mail</a></div><div class="footer-end">Desenvolvido por Leonardo Moreira<br><span id="versaoSite">v1.5.0</span></div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase/config.js"></script>
+<script src="supabase/fotos.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
